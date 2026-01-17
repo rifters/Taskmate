@@ -20,7 +20,7 @@ namespace Taskmate
 
         private void LoadSettings()
         {
-            settings = Settings.LoadBackupScheduleSettings();
+            settings = Taskmate.Properties.Settings.LoadBackupScheduleSettings();
 
             // Set default backup location if not set
             if (string.IsNullOrEmpty(settings.BackupLocation))
@@ -168,13 +168,25 @@ namespace Taskmate
                     ? BackupManager.GetDefaultBackupDirectory() 
                     : txtBackupLocation.Text;
 
-                string backupFile = BackupManager.CreateBackup(location);
-                
-                MessageBox.Show(
-                    $"Test backup completed successfully!\n\nLocation:\n{backupFile}",
-                    "Backup Test",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                // Generate backup file path with timestamp
+                string fileName = $"TaskAssigner_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
+                string backupFile = Path.Combine(location, fileName);
+
+                // Ensure directory exists
+                Directory.CreateDirectory(location);
+
+                if (BackupManager.CreateBackup(backupFile))
+                {
+                    MessageBox.Show(
+                        $"Test backup completed successfully!\n\nLocation:\n{backupFile}",
+                        "Backup Test",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                else
+                {
+                    throw new Exception("Backup creation failed.");
+                }
             }
             catch (Exception ex)
             {
@@ -222,7 +234,7 @@ namespace Taskmate
                 settings.RetentionDays = retention;
                 settings.NotifyOnCompletion = chkNotifyOnCompletion.IsChecked == true;
 
-                Settings.SaveBackupScheduleSettings(settings);
+                Taskmate.Properties.Settings.SaveBackupScheduleSettings(settings);
 
                 MessageBox.Show(
                     "Backup schedule settings saved successfully!",

@@ -122,22 +122,29 @@ namespace Taskmate
                     ? BackupManager.GetDefaultBackupDirectory()
                     : settings.BackupLocation;
 
-                bool backupSuccess = BackupManager.CreateBackup(location);
+                // Generate backup file path with timestamp
+                string fileName = $"TaskAssigner_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
+                string backupFile = Path.Combine(location, fileName);
+
+                // Ensure directory exists
+                Directory.CreateDirectory(location);
+
+                bool backupSuccess = BackupManager.CreateBackup(backupFile);
 
                 // Update last backup time only if backup succeeded
                 if (backupSuccess)
                 {
                     settings.LastBackupDate = DateTime.Now;
-                    Settings.SaveBackupScheduleSettings(settings);
+                    Taskmate.Properties.Settings.SaveBackupScheduleSettings(settings);
 
                     // Log success
                     AuditLogger.Log("SCHEDULED_BACKUP", Environment.UserName, 
-                        $"Automatic backup completed at: {location}");
+                        $"Automatic backup completed at: {backupFile}");
 
                     // Show notification if enabled
                     if (settings.NotifyOnCompletion)
                     {
-                        ShowBackupNotification(location);
+                        ShowBackupNotification(backupFile);
                     }
                 }
                 else

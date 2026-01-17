@@ -170,7 +170,7 @@ namespace Taskmate
 
         private static string GetBackupScheduleSettingsPath()
         {
-            return Path.Combine(GetDataDirectory(), "backup_schedule.json");
+            return Path.Combine(DataManager.GetDataFolderPath(), "backup_schedule.json");
         }
     }
 }

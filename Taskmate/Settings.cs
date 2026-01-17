@@ -78,5 +78,28 @@ namespace Taskmate.Properties {
             var json = System.Text.Json.JsonSerializer.Serialize(settings);
             File.WriteAllText(path, json);
         }
+
+        public static BackupScheduleSettings LoadBackupScheduleSettings()
+        {
+            string path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Taskmate",
+                "backup_schedule.json");
+            
+            if (File.Exists(path))
+            {
+                try
+                {
+                    string json = File.ReadAllText(path);
+                    return System.Text.Json.JsonSerializer.Deserialize<BackupScheduleSettings>(json) ?? new BackupScheduleSettings();
+                }
+                catch
+                {
+                    return new BackupScheduleSettings();
+                }
+            }
+            
+            return new BackupScheduleSettings();
+        }
     }
 }

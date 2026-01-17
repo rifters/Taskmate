@@ -1,0 +1,37 @@
+<Window x:Class="Taskmate.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" Height="300" Width="450"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Appearance" Grid.Row="0" Padding="15">
+            <StackPanel>
+                <TextBlock Text="Theme Mode:" FontWeight="Bold" Margin="0,0,0,10"/>
+                <RadioButton x:Name="rbSystem" Content="Follow System Theme" Margin="0,5" 
+                             GroupName="Theme" Checked="ThemeChanged"/>
+                <RadioButton x:Name="rbLight" Content="Light Mode" Margin="0,5" 
+                             GroupName="Theme" Checked="ThemeChanged"/>
+                <RadioButton x:Name="rbDark" Content="Dark Mode" Margin="0,5" 
+                             GroupName="Theme" Checked="ThemeChanged"/>
+
+                <TextBlock Text="Changes are applied immediately" 
+                           Margin="0,15,0,0" 
+                           FontStyle="Italic" 
+                           Opacity="0.7"
+                           FontSize="11"/>
+            </StackPanel>
+        </GroupBox>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button x:Name="btnClose" Content="Close" Width="100" Height="35" 
+                    Click="btnClose_Click" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

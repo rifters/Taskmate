@@ -1,0 +1,32 @@
+{
+  "Name": "Weekend Chores",
+  "Tasks": [
+    "Clean kitchen",
+    "Wash dishes",
+    "Take out trash",
+    "Vacuum living room",
+    "Mop floors",
+    "Clean bathroom",
+    "Do laundry",
+    "Organize closet",
+    "Wipe down counters",
+    "Empty dishwasher",
+    "Clean windows",
+    "Dust furniture"
+  ],
+  "People": [
+    "Alice",
+    "Bob",
+    "Charlie",
+    "Diana",
+    "Eric"
+  ],
+  "Capacities": {
+    "Alice": 1.0,
+    "Bob": 1.0,
+    "Charlie": 1.0,
+    "Diana": 1.0,
+    "Eric": 1.0
+  },
+  "TaskCategories": {}
+}

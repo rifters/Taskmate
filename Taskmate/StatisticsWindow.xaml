@@ -1,0 +1,53 @@
+﻿<Window x:Class="Taskmate.StatisticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Assignment Statistics" Height="400" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Summary Stats -->
+        <GroupBox Header="Summary" Grid.Row="0" Padding="15" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Tasks:" FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtTotalTasks" HorizontalAlignment="Right"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Total People:" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtTotalPeople" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Average Tasks/Person:" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtAvgTasks" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Fairness Score:" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" x:Name="txtFairness" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Distribution Chart -->
+        <GroupBox Header="Task Distribution" Grid.Row="1" Padding="15">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="pnlDistribution"/>
+            </ScrollViewer>
+        </GroupBox>
+
+        <!-- Close Button -->
+        <Button Grid.Row="2" Content="Close" Width="100" Height="35" Margin="0,15,0,0" 
+                HorizontalAlignment="Right" Click="btnClose_Click" IsDefault="True"/>
+    </Grid>
+</Window>

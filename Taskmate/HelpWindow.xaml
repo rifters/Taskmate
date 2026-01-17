@@ -1,0 +1,985 @@
+﻿<Window x:Class="Taskmate.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Task Assigner - Help" Height="650" Width="850"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0" Margin="10">
+            <!-- Getting Started Tab -->
+            <TabItem Header="🚀 Getting Started">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Welcome to Task Assigner!" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="What is Task Assigner?" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            Task Assigner helps you randomly distribute tasks among people fairly. Perfect for restaurants, offices, households, or any team that needs random task distribution with smart load balancing.
+                        </TextBlock>
+
+                        <TextBlock Text="Quick Start Guide:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            <Run Text="1. " FontWeight="Bold"/>
+                            <Run Text="Load or create a task list using 📂 Load Tasks or ✏️ Manage Tasks"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            <Run Text="2. " FontWeight="Bold"/>
+                            <Run Text="Load or create a people list using 📂 Load People or ✏️ Manage People"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            <Run Text="3. " FontWeight="Bold"/>
+                            <Run Text="(Optional) Set constraints, availability, or task properties"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            <Run Text="4. " FontWeight="Bold"/>
+                            <Run Text="Click 🎲 Assign Tasks (or press F5) to randomly distribute tasks"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">
+                            <Run Text="5. " FontWeight="Bold"/>
+                            <Run Text="View results, check 📊 Stats, copy, export, or print assignments"/>
+                        </TextBlock>
+
+                        <TextBlock Text="Drag and Drop Support:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            You can drag and drop .txt files directly onto the window. Files with "task" in the name will be loaded as tasks, files with "people" or "person" will be loaded as people.
+                        </TextBlock>
+
+                        <TextBlock Text="Keyboard Shortcuts:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Press <Run FontWeight="Bold">Ctrl+H</Run> to open this help, or see the full list under Help → Keyboard Shortcuts.
+                        </TextBlock>
+
+                        <TextBlock Text="Try the Samples:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            New to Task Assigner? Use <Run FontWeight="Bold">File → Load Sample Files</Run> to instantly load example tasks and people. Perfect for testing and learning how the app works!
+                        </TextBlock>
+
+                        <Border Background="#e3f2fd" Padding="15" Margin="0,10,0,0" CornerRadius="5">
+                            <StackPanel>
+                                <TextBlock Text="💡 Pro Tip" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="12">
+                                    Task Assigner has many advanced features that can be enabled in Settings → Advanced Features. Start with basic features and enable more as you need them!
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="Dashboard Overview:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            The dashboard at the top of the main window shows at-a-glance information:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            📋 <Run FontWeight="Bold">Last Assignment</Run> - When you last assigned tasks and how many
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            ⚖️ <Run FontWeight="Bold">Fairness Score</Run> - Live calculation of workload distribution (90%+ is excellent)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">
+                            ⚡ <Run FontWeight="Bold">Quick Stats</Run> - Shows overloaded/underloaded person counts
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Managing Lists Tab -->
+            <TabItem Header="📋 Managing Lists">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Task and People Management" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Loading from Files:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                            Use 📂 Load Tasks or 📂 Load People to import from text files. Files should have one item per line.
+                        </TextBlock>
+
+                        <TextBlock Text="Managing Lists:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            <Run Text="✏️ Manage Tasks / ✏️ Manage People" FontWeight="Bold"/>
+                            <Run Text=" - Opens the list manager where you can:"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Add new items manually</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Remove selected items</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Clear all items</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Import from .txt or .json files</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,15">• Export to .txt or .json files</TextBlock>
+
+                        <TextBlock Text="Saving Groups:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Use <Run FontWeight="Bold">File → Save Group (Ctrl+S)</Run> to save both your tasks and people lists together as a single .tgroup file. Groups preserve all settings including task properties, availability, and roles.
+                        </TextBlock>
+
+                        <TextBlock Text="Recent Groups:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Access your recently saved groups from <Run FontWeight="Bold">File → Recent Groups</Run> for quick loading. Your last 10 groups are always available!
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Assignment Features Tab -->
+            <TabItem Header="🎲 Assignments">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Assignment Features" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="How Assignment Works:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                            When you click 🎲 Assign Tasks (or press F5), both tasks and people are randomly shuffled, then tasks are distributed evenly among people. The system automatically balances workload and respects any constraints you've set.
+                        </TextBlock>
+
+                        <TextBlock Text="Understanding the Results Grid:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • <Run FontWeight="Bold">Person</Run> - Name of the person
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • <Run FontWeight="Bold">Tasks</Run> - Number of tasks assigned
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • <Run FontWeight="Bold">Workload</Run> - Percentage compared to average (100% = average load)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            • <Run FontWeight="Bold">Assigned Tasks</Run> - List of all tasks for that person
+                        </TextBlock>
+
+                        <TextBlock Text="Viewing Statistics:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Click <Run FontWeight="Bold">📊 Stats</Run> to view detailed statistics including:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Total tasks and people</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Average tasks per person</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Fairness score (0-100%, higher is better)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,15">• Visual distribution bars showing workload</TextBlock>
+
+                        <TextBlock Text="Output File:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                            Each assignment is automatically saved to "assignments.txt" in the application directory for easy reference.
+                        </TextBlock>
+
+                        <TextBlock Text="Undo and History:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • Use <Run FontWeight="Bold">↩️ Undo (Ctrl+Z)</Run> to revert to the previous assignment
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • View session history via <Run FontWeight="Bold">Edit → View Session History</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • Browse ALL history (even from previous days) via <Run FontWeight="Bold">Edit → Browse All History (Ctrl+Shift+H)</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • All assignments are automatically saved permanently to your history archive
+                        </TextBlock>
+
+                        <TextBlock Text="Visual Workload Indicators:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Assignments are color-coded for instant visual feedback on workload balance:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            🔴 <Run FontWeight="Bold">Red background</Run> - Overloaded (&gt;120% workload)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            🟡 <Run FontWeight="Bold">Yellow background</Run> - Slightly high (100-120% workload)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            ⚪ <Run FontWeight="Bold">Normal</Run> - Balanced (80-100% workload)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">
+                            🟢 <Run FontWeight="Bold">Green background</Run> - Underloaded (&lt;80% workload)
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Copy & Export Tab -->
+            <TabItem Header="📋 Copy &amp; Export">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Copying and Exporting Assignments" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Copy to Clipboard:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • Press <Run FontWeight="Bold">Ctrl+C</Run> or use <Run FontWeight="Bold">Edit → Copy All Assignments</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            • Right-click on the results grid for more copy options
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            • Select a person and choose "Copy Selected Person's Tasks" to copy just their tasks
+                        </TextBlock>
+
+                        <TextBlock Text="Export to CSV:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Use <Run FontWeight="Bold">File → Export to CSV</Run> to save assignments as a spreadsheet file that can be opened in Excel or Google Sheets.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            Perfect for sharing with your team or keeping records!
+                        </TextBlock>
+
+                        <TextBlock Text="Print Preview:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Press <Run FontWeight="Bold">Ctrl+P</Run> or use <Run FontWeight="Bold">View → Print Preview</Run> to generate a print-friendly view perfect for posting on bulletin boards.
+                        </TextBlock>
+
+                        <TextBlock Text="Mobile Export:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Use <Run FontWeight="Bold">Tools → Mobile Export</Run> to create:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,5,0,5">• Mobile-optimized HTML page</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• QR code for easy phone access</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,15">• Staff can scan and view tasks on their phones!</TextBlock>
+
+                        <TextBlock Text="Right-Click Context Menu:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Right-click anywhere on the assignments grid to access:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,5,0,5">• Copy All Assignments</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Copy Selected Person's Tasks</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Swap with Another Person</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,15">• Export to CSV...</TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Advanced Features Tab -->
+            <TabItem Header="⚡ Advanced Features">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Advanced Features Guide" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.7" Margin="0,0,0,20">
+                            Enable only the features you need in Settings → Advanced Features. All features can be toggled on/off.
+                        </TextBlock>
+
+                        <!-- CORE FEATURES -->
+                        <TextBlock Text="Core Features" FontSize="16" FontWeight="Bold" Margin="0,10,0,10" Foreground="#1976d2"/>
+
+                        <TextBlock Text="🚫 Task Constraints" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Exclude specific people from specific tasks based on allergies, physical limitations, or skill requirements.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3" FontStyle="Italic" Opacity="0.8">
+                            Access: Edit → Task Constraints
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">
+                            <Run FontWeight="Bold">Example:</Run> Exclude "John" from "Heavy Lifting" tasks
+                        </TextBlock>
+
+                        <TextBlock Text="📅 Persistent History" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            All assignments are automatically saved permanently with search, filtering by date/tag, and report generation capabilities.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            Access: Edit → Browse All History (Ctrl+Shift+H)
+                        </TextBlock>
+
+                        <!-- TASK MANAGEMENT -->
+                        <TextBlock Text="Task Management" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" Foreground="#1976d2"/>
+
+                        <TextBlock Text="📊 Task Difficulty/Weighting" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Assign difficulty levels (Easy=1, Medium=2, Hard=3) to tasks for balanced distribution based on complexity, not just task count.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10">
+                            <Run FontWeight="Bold">Benefit:</Run> Ensures no one gets all the hard tasks
+                        </TextBlock>
+
+                        <TextBlock Text="⏰ Task Time Estimates" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Assign time estimates (in minutes) to tasks for workload balancing based on actual time rather than just task count.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10">
+                            <Run FontWeight="Bold">Example:</Run> "Clean Grill" = 30 min, "Refill Napkins" = 5 min
+                        </TextBlock>
+
+                        <TextBlock Text="📁 Task Categories" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Organize tasks into categories (Cleaning, Cooking, Service, Opening, Closing) for better organization and balanced distribution across categories.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            Access: Settings → Manage Categories, then Edit → Task Properties
+                        </TextBlock>
+
+                        <!-- PEOPLE MANAGEMENT -->
+                        <TextBlock Text="People Management" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" Foreground="#1976d2"/>
+
+                        <TextBlock Text="✅ Person Availability" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Mark people as available or unavailable to temporarily exclude them from assignments without removing them from your list.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Perfect for:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Sick days or time off</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Vacation schedules</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• Part-time staff not working today</TextBlock>
+
+                        <TextBlock Text="👔 Role-Based Assignment" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Assign roles to people (Server, Cook, Host, Manager) for structured team management and reporting.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            Setup: Settings → Manage Roles, then Edit → Person Availability
+                        </TextBlock>
+
+                        <!-- ASSIGNMENT FEATURES -->
+                        <TextBlock Text="Assignment Features" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" Foreground="#1976d2"/>
+
+                        <TextBlock Text="🔄 Auto-Rotation System" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Track who has done which tasks over time and get suggestions for fair rotation. Ensures everyone eventually does every job.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            View Report: Tools → View Rotation Report
+                        </TextBlock>
+
+                        <TextBlock Text="📝 Assignment Templates" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Save successful assignments as templates and reuse them later. Perfect for standard shifts or recurring schedules.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">How to use:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">1. Assign tasks normally</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">2. Tools → Save as Template</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">3. Later: Tools → Load Template to reuse</TextBlock>
+
+                        <TextBlock Text="💬 Assignment Notes" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Add notes or comments to assignments to track special circumstances, changes, or important context.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10">
+                            <Run FontWeight="Bold">Example:</Run> "Bob left early, Alice covered his closing tasks"
+                        </TextBlock>
+
+                        <TextBlock Text="📅 Assignment Scheduler" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Schedule assignments for specific dates and times, with support for recurring assignments (daily, weekly, monthly).
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Features:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Schedule assignments for future dates</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Set up recurring assignments</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• View upcoming scheduled assignments</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Enable/disable schedules without deleting</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• Execute scheduled assignments manually</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            Access: Tools → Assignment Scheduler
+                        </TextBlock>
+
+                        <!-- WORKFLOW TOOLS -->
+                        <TextBlock Text="Workflow Tools" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" Foreground="#1976d2"/>
+
+                        <TextBlock Text="🔄 Quick Swap" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Instantly exchange all tasks between two people for last-minute schedule changes or call-outs.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">How to swap:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">1. Right-click on a person in results</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">2. Select "Swap with Another Person..."</TextBlock>
+
+                        <TextBlock Text="⚡ Bulk Edit Mode" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Select multiple tasks and edit their properties (category, difficulty, time) all at once. Saves tons of time when configuring many tasks!
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            Access: Edit → Task Properties → Select multiple → Bulk Edit Selected
+                        </TextBlock>
+
+                        <!-- OUTPUT & ANALYTICS -->
+                        <TextBlock Text="Output &amp; Analytics" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" Foreground="#1976d2"/>
+
+                        <TextBlock Text="🖨️ Print Preview" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Generate professional, print-friendly assignment schedules perfect for posting on bulletin boards.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10">
+                            <Run FontWeight="Bold">Shortcut:</Run> Ctrl+P after assigning tasks
+                        </TextBlock>
+
+                        <TextBlock Text="📱 Mobile-Friendly Export" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Generate mobile-optimized HTML pages with QR codes. Staff can scan the code to view their tasks on phones!
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Features:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Dark mode support</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Works offline (no internet needed)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• Print QR code for bulletin boards</TextBlock>
+
+                        <TextBlock Text="📊 Performance Analytics" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            View comprehensive analytics dashboard with task distribution stats, fairness tracking, and top contributors over time.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            Access: Tools → Analytics Dashboard
+                        </TextBlock>
+
+                        <TextBlock Text="🔔 Notifications" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Multi-channel notifications for key events including toast, email, and SMS notifications.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Notification Types:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Windows 10+ toast notifications</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Email notifications (SMTP)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• SMS notifications (via Twilio)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• Custom notifications for important events</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Features:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Assignment completion alerts</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Template loaded confirmations</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• Rotation alerts for frequently assigned tasks</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5" FontStyle="Italic" Opacity="0.8">
+                            Configure: Settings → Notification Settings
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontSize="11" Opacity="0.7">
+                            Note: Toast notifications require Windows 10 build 17763+. Email requires SMTP settings. SMS requires Twilio account (free trial available).
+                        </TextBlock>
+
+                        <!-- SECURITY & COMPLIANCE -->
+                        <TextBlock Text="Security &amp; Compliance" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" Foreground="#1976d2"/>
+
+                        <TextBlock Text="🔒 Session Timeout" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Automatically close the application after a specified period of inactivity. Recommended for shared computers or public workstations.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Configuration:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Set timeout duration (default: 30 minutes)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Enable/disable per user preference</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• Requires restart to take effect</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            Configure: Settings → Security Settings
+                        </TextBlock>
+
+                        <TextBlock Text="📋 Audit Logging" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Enterprise-grade logging tracks all changes including assignments, group saves, and settings modifications. Essential for compliance and security audits.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">What's logged:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• All task assignments with timestamp</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Group saves and loads</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Settings changes</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Feature toggles</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• User name and machine name for each action</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10" FontStyle="Italic" Opacity="0.8">
+                            View log: File → View Audit Log
+                        </TextBlock>
+
+                        <TextBlock Text="🗑️ GDPR Compliance (Clear All Data)" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Exercise your right to be forgotten by permanently deleting all stored data. This action cannot be undone.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">What gets deleted:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• All assignment history</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Saved groups and templates</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Settings and preferences</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Rotation tracking data</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• Notification configurations</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5" FontStyle="Italic" Opacity="0.8">
+                            Access: File → Clear All Data (GDPR)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10" FontSize="11" Foreground="Red">
+                            ⚠️ An emergency backup is automatically created before deletion!
+                        </TextBlock>
+
+                        <!-- ENABLING FEATURES -->
+                        <Border Background="{DynamicResource AccentBackgroundBrush}" Padding="15" Margin="0,20,0,0" CornerRadius="5">
+                            <StackPanel>
+                                <TextBlock Text="💡 Managing Advanced Features" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,0,0,5">
+                                    Keep your interface clean by enabling only what you need:
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="12" Margin="15,5,0,3">
+                                    1. Go to Settings → Advanced Features
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="12" Margin="15,0,0,3">
+                                    2. Check/uncheck the features you want to use
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="12" Margin="15,0,0,3">
+                                    3. Click Save
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,10,0,0" FontStyle="Italic">
+                                    Disabled features are automatically hidden from menus, keeping your workspace clean and simple!
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Tips & Tricks Tab -->
+            <TabItem Header="💡 Tips &amp; Tricks">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Tips and Tricks" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Productivity Tips:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,10"/>
+                        
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="⌨️ Master the Keyboard Shortcuts:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">F5</Run> - Quick assign/reassign
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+C</Run> - Instant copy to clipboard
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+Z</Run> - Undo if you don't like the result
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+P</Run> - Print preview
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            <Run FontWeight="Bold">Ctrl+Shift+H</Run> - History browser
+                        </TextBlock>
+                        
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="✨ Save Time with Groups:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            Create groups for different scenarios (Morning Shift, Evening Shift, Weekend Crew) and quickly switch between them. No more reloading files every day!
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="📊 Check Fairness Regularly:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            After each assignment, check the Statistics window. A fairness score above 90% means tasks are very evenly distributed. The workload column helps spot imbalances quickly.
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="🔄 Don't Settle - Reassign:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            Don't like an assignment? Just press F5 for a completely new random distribution. Use Ctrl+Z if you prefer the previous one!
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="🖨️ Print for Physical Posting:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            Press Ctrl+P after assignments to get a clean, printable view. Perfect for posting schedules at work! Use "Print to PDF" to save as a file.
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="📱 Mobile Access with QR Codes:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            Use Mobile Export to generate a QR code. Print it and post it - staff scan with their phones to see their tasks instantly!
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="🔄 Handle Call-Outs with Swap:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            When someone calls in sick and another person covers, right-click and use "Swap with Another Person" to instantly exchange all tasks!
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="✅ Track Availability:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            Enable Person Availability to mark who's off today. They'll automatically be excluded from assignments without removing them permanently.
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="📊 Balance by Difficulty:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            Enable Task Weighting to mark hard tasks (like grill duty) as difficulty 3 and easy tasks (refill napkins) as difficulty 1. Everyone gets a fair mix!
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="📝 Save Successful Assignments as Templates:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            Got a perfect assignment? Save it as a template (Tools → Save as Template) and reuse it later instead of reassigning from scratch!
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+                            <Run Text="⏱️ For Restaurant Shifts:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+                            • Create separate groups for different shifts
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+                            • Use constraints for role requirements (host, server, cook)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+                            • Check workload percentages to ensure fairness
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+                            • Tag assignments by shift for easy history tracking
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+    <Run Text="⚡ Performance for Large Teams (50+ People/100+ Tasks):" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Enable task categories to group related tasks together
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Disable analytics auto-refresh in Settings if dashboard is slow
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Use History Browser filters instead of loading all history
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Archive old assignments (File → Backup All Data monthly)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Keep groups under 100 people/200 tasks for best performance
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+    • Consider splitting very large teams into multiple groups
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+    <Run Text="💾 Data Backup Best Practices:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Backup weekly: File → Backup All Data
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Store backups on network drive or cloud storage
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Keep at least 3 recent backups
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    • Test restoring a backup occasionally to verify it works
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+    • Backup before major changes (new version, bulk edits)
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,5">
+    <Run Text="🎓 Team Onboarding Checklist:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    ✅ 1. Load sample files to see how it works (File → Load Sample Files)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    ✅ 2. Try your first assignment (press F5)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    ✅ 3. Check fairness statistics (📊 Stats button)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    ✅ 4. Save your first group (Ctrl+S)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    ✅ 5. Explore one advanced feature (Settings → Advanced Features)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">
+    ✅ 6. Set up your first backup (File → Backup All Data)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">
+    ✅ 7. Configure notifications if needed (Settings → Notification Settings)
+                        </TextBlock>
+
+                        <TextBlock Text="Keyboard Shortcuts Reference:" FontSize="14" FontWeight="SemiBold" Margin="0,20,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="20,5,0,3">
+                            <Run FontWeight="Bold">F5</Run> - Assign Tasks
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+A</Run> - Assign Tasks (alternative)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+Z</Run> - Undo
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+C</Run> - Copy All
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+S</Run> - Save Group
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+O</Run> - Open Group
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+P</Run> - Print Preview
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+H</Run> - Help
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Ctrl+Shift+H</Run> - History Browser
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Escape</Run> - Close dialogs
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">
+                            <Run FontWeight="Bold">Enter</Run> - Confirm dialogs
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- About Tab -->
+            <TabItem Header="ℹ️ About">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Task Assigner" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20,0,10"/>
+                        <TextBlock Text="Version 1.0" FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <TextBlock Text="Created by Eric Lynn" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,20" FontStyle="Italic"/>
+                        
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="12" HorizontalAlignment="Center" Margin="0,0,0,5" Opacity="0.8" MaxWidth="500">
+                            Originally developed for Denny's restaurant, but designed to work for any team or organization that needs fair task distribution.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="11" HorizontalAlignment="Center" Margin="0,0,0,30" Opacity="0.7" MaxWidth="450">
+                            Perfect for restaurants, offices, households, schools, or anywhere you need to assign tasks fairly!
+                        </TextBlock>
+                        
+                        <TextBlock Text="A smart task distribution application" FontSize="13" HorizontalAlignment="Center" Margin="0,10,0,5"/>
+                        <TextBlock Text="for fair and random assignment" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+                        
+                        <TextBlock Text="Features:" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,10,0,10"/>
+                        <TextBlock Text="✨ Random task distribution" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📊 Fairness statistics with workload analysis" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="🚫 Task constraints and exclusions" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="↩️ Undo and assignment history" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="💾 Group management with recent files" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📋 Copy to clipboard and CSV export" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="⌨️ Full keyboard shortcut support" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📅 Permanent history archive with search" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="🏷️ Tag-based organization" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📈 Automatic report generation" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="🖨️ Professional print preview" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="🔄 Quick task swap between people" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="✅ Person availability management" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📊 Task difficulty/weight balancing" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="⏰ Task time estimates" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📁 Task categories" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="👔 Role-based team organization" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="🔄 Auto-rotation tracking" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📝 Assignment templates" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="💬 Assignment notes" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="⚡ Bulk edit mode" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📱 Mobile-friendly export with QR codes" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="📊 Performance analytics dashboard" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="⚙️ Toggleable advanced features" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="🔒 Session timeout and audit logging" HorizontalAlignment="Center" Margin="0,3,0,3"/>
+                        <TextBlock Text="🎨 Light and dark themes" HorizontalAlignment="Center" Margin="0,3,0,30"/>
+
+                        <TextBlock Text="© 2026 Task Assigner" FontSize="11" HorizontalAlignment="Center" Margin="0,20,0,5" Opacity="0.7"/>
+                        <TextBlock Text="Built with WPF and .NET 10" FontSize="11" HorizontalAlignment="Center" Opacity="0.7"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Best Practices Tab -->
+            <TabItem Header="⭐ Best Practices">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="Best Practices &amp; Recommendations" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+            
+            <!-- Feature Usage by User Type -->
+            <TextBlock Text="📋 Feature Usage Recommendations" FontSize="16" FontWeight="Bold" Margin="0,10,0,10" Foreground="#1976d2"/>
+            
+            <TextBlock Text="For Restaurant Managers:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                <Run FontWeight="Bold">Morning Routine:</Run>
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">1. Load your shift group (Ctrl+O → Recent Groups)</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">2. Check Person Availability (mark sick/absent staff)</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">3. Press F5 to assign tasks</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">4. Print schedule (Ctrl+P) and post in kitchen</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">5. Use Mobile Export → Generate QR code for staff phones</TextBlock>
+            
+            <TextBlock Text="For Office Teams:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                <Run FontWeight="Bold">Weekly Planning:</Run>
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">• Use Assignment Scheduler for recurring meetings</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">• Set up templates for standard rotations</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">• Check Analytics Dashboard for fairness trends</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">• Use constraints for skill-based assignments</TextBlock>
+            
+            <TextBlock Text="For Households:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                <Run FontWeight="Bold">Family Chores:</Run>
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">• Keep it simple - disable most advanced features</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">• Use templates for weekly routines</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,3">• Quick Swap when someone can't do their chore</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="20,0,0,10">• Check fairness monthly to ensure equity</TextBlock>
+
+            <!-- Feature Combinations -->
+            <TextBlock Text="🔗 Powerful Feature Combinations" FontSize="16" FontWeight="Bold" Margin="0,25,0,10" Foreground="#1976d2"/>
+            
+            <TextBlock Text="Combination #1: Automated Scheduling" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <Border Background="#e3f2fd" Padding="10" CornerRadius="5" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Scheduler + Templates + Notifications</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">✓ Schedule recurring assignments</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">✓ Use saved templates for consistency</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,0">✓ Get SMS reminders before scheduled time</TextBlock>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Text="Combination #2: Fair Rotation Tracking" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <Border Background="#e3f2fd" Padding="10" CornerRadius="5" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Rotation Tracking + Analytics + Categories</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">✓ Track who does what over time</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">✓ View fairness trends in Analytics Dashboard</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,0">✓ Balance assignments across task categories</TextBlock>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Text="Combination #3: Team Management" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <Border Background="#e3f2fd" Padding="10" CornerRadius="5" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Availability + Roles + Constraints</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">✓ Mark who's working today</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">✓ Assign based on roles (cook, server, etc.)</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,0">✓ Exclude people from incompatible tasks</TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Things to Watch Out For -->
+            <TextBlock Text="⚠️ Common Pitfalls to Avoid" FontSize="16" FontWeight="Bold" Margin="0,25,0,10" Foreground="#1976d2"/>
+            
+            <TextBlock Text="Problem: Over-constraining" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <Border Background="#fff3cd" Padding="10" CornerRadius="5" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Symptom:</Run> Tasks remain unassigned, warnings about constraints
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,3">
+                        <Run FontWeight="Bold">Solution:</Run> Review constraints monthly
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,0">
+                        • Keep exclusions to genuine limitations only
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Text="Problem: Notification Overload" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <Border Background="#fff3cd" Padding="10" CornerRadius="5" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Symptom:</Run> Too many emails/SMS messages
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,3">
+                        <Run FontWeight="Bold">Recommendation:</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">• Toast: For everything</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">• Email: For daily summaries only</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,0">• SMS: For urgent items only</TextBlock>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Text="Problem: Large History Size" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <Border Background="#fff3cd" Padding="10" CornerRadius="5" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Symptom:</Run> App runs slower over time, large data folder
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,3">
+                        <Run FontWeight="Bold">Solution:</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">• Backup data monthly (File → Backup All Data)</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,0">• Archive old assignments yearly</TextBlock>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Text="Problem: Performance Issues (Large Teams)" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <Border Background="#fff3cd" Padding="10" CornerRadius="5" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Symptom:</Run> Slow assignments with 50+ people or 100+ tasks
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,3">
+                        <Run FontWeight="Bold">Solutions:</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">• Use task categories to group related tasks</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">• Disable analytics auto-refresh in Settings</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,3">• Split very large teams into multiple groups</TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="5,0,0,0">• Keep groups under 100 people/200 tasks for best performance</TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Maintenance Schedule -->
+            <TextBlock Text="🔧 Maintenance Schedule" FontSize="16" FontWeight="Bold" Margin="0,25,0,10" Foreground="#1976d2"/>
+            
+            <TextBlock Text="Weekly Tasks:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Backup all data (File → Backup All Data)</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">☐ Check fairness statistics for imbalances</TextBlock>
+            
+            <TextBlock Text="Monthly Tasks:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Review scheduled assignments</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Check analytics for fairness trends</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Clean up old templates</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">☐ Review and update constraints</TextBlock>
+            
+            <TextBlock Text="Quarterly Tasks:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Store backups to network/cloud drive</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Review feature usage (disable unused features)</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">☐ Update roles and categories</TextBlock>
+            
+            <TextBlock Text="Yearly Tasks:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Archive old history (backup then restore fresh)</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">☐ Update task and people lists</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">☐ Review all settings and preferences</TextBlock>
+
+            <TextBlock Text="Automatic Backup Schedule:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">✓ Configure in File → Backup Schedule</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">✓ Choose Daily, Weekly, or Monthly frequency</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">✓ Set preferred day/time for backups</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">✓ Old backups are automatically cleaned up</TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">✓ Receive notification when backup completes</TextBlock>
+            
+                        <!-- Pro Tips -->
+            <Border Background="#e8f5e9" Padding="15" Margin="0,20,0,0" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="💡 Pro Tips from Power Users" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Tip 1:</Run> Use Recent Groups (File menu) instead of navigating file dialogs every time - saves hours over a month!
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Tip 2:</Run> Create templates for common scenarios (Morning Shift, Evening Shift, Weekends) and load them in seconds.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Tip 3:</Run> F5 is your best friend - press it multiple times until you get a distribution you like!
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">Tip 4:</Run> Mobile Export QR codes work offline - perfect for kitchens with poor WiFi.
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,0">
+                        <Run FontWeight="Bold">Tip 5:</Run> Check the Analytics Dashboard monthly - you'll spot patterns you never noticed before!
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</TabItem>
+
+
+        </TabControl>
+
+        <!-- Close Button -->
+        <Button Grid.Row="1" Content="Close" Width="100" Height="35" Margin="10" 
+                HorizontalAlignment="Right" Click="btnClose_Click" IsDefault="True"/>
+    </Grid>
+</Window>

@@ -1,0 +1,16 @@
+﻿<Application x:Class="Taskmate.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Taskmate"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/LightTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- MUST HAVE THIS -->
+            <local:NullToBoolConverter x:Key="NullToBoolConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

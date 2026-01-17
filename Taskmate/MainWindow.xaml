@@ -1,0 +1,280 @@
+﻿<Window x:Class="Taskmate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Task Assigner" Height="550" Width="950"
+        AllowDrop="True"
+        Drop="Window_Drop"
+        DragOver="Window_DragOver">
+
+    <Window.InputBindings>
+        <KeyBinding Key="A" Modifiers="Control" Command="{Binding AssignCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveGroupCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding LoadGroupCommand}"/>
+        <KeyBinding Key="H" Modifiers="Control" Command="{Binding HelpCommand}"/>
+        <KeyBinding Key="F5" Command="{Binding AssignCommand}"/>
+    </Window.InputBindings>
+
+    <Window.Resources>
+        <!-- Add this DataGrid Row Style for Color Coding -->
+        <Style x:Key="WorkloadRowStyle" TargetType="DataGridRow">
+            <Style.Triggers>
+                <!-- Red for overloaded (>120%) -->
+                <DataTrigger Binding="{Binding IsOverloaded}" Value="True">
+                    <Setter Property="Background" Value="#ffebee"/>
+                    <Setter Property="Foreground" Value="#c62828"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                </DataTrigger>
+                <!-- Green for underloaded (<80%) -->
+                <DataTrigger Binding="{Binding IsUnderloaded}" Value="True">
+                    <Setter Property="Background" Value="#e8f5e9"/>
+                    <Setter Property="Foreground" Value="#2e7d32"/>
+                </DataTrigger>
+                <!-- Yellow for slightly high (100-120%) -->
+                <DataTrigger Binding="{Binding IsSlightlyHigh}" Value="True">
+                    <Setter Property="Background" Value="#fff9c4"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Menu Bar -->
+        <Menu Height="25" VerticalAlignment="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Load Sample Files" Click="btnLoadSamples_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📝" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Save Group..." Click="btnSaveGroup_Click" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Load Group..." Click="btnLoadGroup_Click" InputGestureText="Ctrl+O"/>
+                <Separator/>
+                <MenuItem x:Name="mnuRecentGroups" Header="Recent Groups">
+                    <MenuItem Header="(No recent groups)" IsEnabled="False"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Export to CSV..." Click="btnExportCsv_Click"/>
+                <Separator/>
+                <MenuItem Header="Backup All Data..." Click="btnBackupData_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="💾" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Restore from Backup..." Click="btnRestoreData_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📥" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Backup Schedule..." Click="MenuBackupSchedule_Click"/>
+                <Separator/>
+                <Separator/>
+                <MenuItem Header="Clear All Data (GDPR)" Click="btnClearAllData_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🗑️" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="View Audit Log" Click="btnViewAuditLog_Click" x:Name="mnuViewAuditLog">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📋" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Exit" Click="mnuExit_Click"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem x:Name="mnuConstraints" Header="Task Constraints..." Click="btnConstraints_Click"/>
+                <MenuItem x:Name="mnuEnhancedTaskManager" Header="Task Properties..." Click="btnEnhancedTaskManager_Click" ToolTip="Set difficulty, time, category, and notes"/>
+                <MenuItem x:Name="mnuAvailability" Header="Person Availability..." Click="btnAvailability_Click"/>
+                <Separator x:Name="sepAdvanced"/>
+                <MenuItem x:Name="mnuAddNotes" Header="Add Notes to Assignment..." Click="btnAddNotes_Click"/>
+                <Separator/>
+                <MenuItem Header="Undo Last Assignment" Click="btnUndo_Click" x:Name="mnuUndo" IsEnabled="False" InputGestureText="Ctrl+Z"/>
+                <MenuItem x:Name="mnuSessionHistory" Header="View Session History..." Click="btnHistory_Click"/>
+                <Separator/>
+                <MenuItem x:Name="mnuHistoryBrowser" Header="Browse All History..." Click="btnHistoryBrowser_Click" InputGestureText="Ctrl+Shift+H"/>
+                <Separator/>
+                <MenuItem Header="Copy All Assignments" Click="btnCopyAll_Click" InputGestureText="Ctrl+C"/>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Statistics..." Click="btnShowStats_Click"/>
+                <MenuItem x:Name="mnuPrintPreview" Header="Print Preview..." Click="btnPrintPreview_Click" InputGestureText="Ctrl+P"/>
+            </MenuItem>
+            <MenuItem Header="Settings">
+                <MenuItem Header="General Settings..." Click="btnSettings_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="⚙️" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Advanced Features..." Click="btnAdvancedFeatures_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="⚡" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Notification Settings..." Click="btnNotificationSettings_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🔔" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <!-- ADD THIS NEW MENU ITEM HERE -->
+                <MenuItem Header="Security Settings..." Click="btnSecuritySettings_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🔒" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <Separator/>
+                <MenuItem Header="Manage Tags..." Click="btnManageTags_Click"/>
+                <MenuItem Header="Manage Roles..." Click="btnManageRoles_Click" x:Name="mnuManageRoles"/>
+                <MenuItem Header="Manage Categories..." Click="btnManageCategories_Click" x:Name="mnuManageCategories"/>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem x:Name="mnuSaveTemplate" Header="Save as Template..." Click="btnSaveTemplate_Click"/>
+                <MenuItem x:Name="mnuLoadTemplate" Header="Load Template..." Click="btnLoadTemplate_Click"/>
+                <Separator/>
+                <MenuItem x:Name="mnuRotationReport" Header="View Rotation Report..." Click="btnRotationReport_Click"/>
+                <MenuItem x:Name="mnuAnalytics" Header="Analytics Dashboard..." Click="btnAnalytics_Click"/>
+                <MenuItem x:Name="mnuScheduler" Header="Assignment Scheduler..." Click="btnScheduler_Click"/>
+                <Separator/>
+                <MenuItem x:Name="mnuMobileExport" Header="Mobile Export..." Click="btnMobileExport_Click"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="User Guide" Click="btnHelp_Click" InputGestureText="Ctrl+H"/>
+                <MenuItem Header="Keyboard Shortcuts" Click="btnShortcuts_Click"/>
+                <MenuItem Header="About Task Assigner" Click="btnAbout_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <Grid Margin="10,30,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Instructions -->
+            <TextBlock Grid.Row="0" 
+                       Text="Drag and drop your tasks.txt and people.txt files here, or use buttons below."
+                       TextWrapping="Wrap" Margin="0,0,0,10" FontSize="13"/>
+
+            <!-- Button Panel -->
+            <Grid Grid.Row="1" Margin="0,0,0,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Main action buttons -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Name="btnLoadTasks" Content="📂 Load Tasks" Width="110" Height="35" Margin="0,0,5,0" Click="btnLoadTasks_Click"/>
+                    <Button Name="btnManageTasks" Content="✏️ Manage Tasks" Width="125" Height="35" Margin="0,0,10,0" Click="btnManageTasks_Click"/>
+                    <Button Name="btnLoadPeople" Content="📂 Load People" Width="110" Height="35" Margin="0,0,5,0" Click="btnLoadPeople_Click"/>
+                    <Button Name="btnManagePeople" Content="✏️ Manage People" Width="130" Height="35" Margin="0,0,10,0" Click="btnManagePeople_Click"/>
+                    <Button Name="btnConstraints" Content="🚫 Constraints" Width="110" Height="35" Margin="0,0,10,0" Click="btnConstraints_Click" ToolTip="Manage task exclusions"/>
+                    <Button Name="btnAssign" Content="🎲 Assign (F5)" Width="120" Height="35" Margin="0,0,5,0" Click="btnAssign_Click" FontWeight="Bold"/>
+                    <Button Name="btnUndo" Content="↩️ Undo" Width="80" Height="35" Margin="0,0,10,0" Click="btnUndo_Click" IsEnabled="False" ToolTip="Undo last assignment (Ctrl+Z)"/>
+                    <Button Name="btnShowStats" Content="📊 Stats" Width="80" Height="35" Margin="0,0,10,0" Click="btnShowStats_Click"/>
+                    <Button Name="btnSettings" Content="⚙️" Width="45" Height="35" Click="btnSettings_Click" ToolTip="Settings"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Dashboard Widget - Add this after Toolbar, before DataGrid -->
+            <Expander x:Name="dashboardWidget" 
+                      Header="📊 Dashboard" 
+                      IsExpanded="True" 
+                      Margin="10,5,10,5"
+                      Background="#f5f5f5"
+                      BorderBrush="#e0e0e0"
+                      BorderThickness="1">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Last Assignment Info -->
+                    <Border Grid.Column="0" Background="White" Padding="10" CornerRadius="5" Margin="0,0,5,0" BorderBrush="#e0e0e0" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="📋 Last Assignment" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="txtLastAssignmentTime" Text="No assignments yet" FontSize="11" Opacity="0.7"/>
+                            <TextBlock x:Name="txtLastAssignmentInfo" Text="" FontSize="11" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Fairness Score -->
+                    <Border Grid.Column="1" Background="White" Padding="10" CornerRadius="5" Margin="0,0,5,0" BorderBrush="#e0e0e0" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="⚖️ Fairness Score" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="txtFairnessScore" Text="--" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                            <TextBlock x:Name="txtFairnessLabel" Text="Not calculated" FontSize="10" HorizontalAlignment="Center" Opacity="0.7"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Quick Actions -->
+                    <Border Grid.Column="2" Background="White" Padding="10" CornerRadius="5" BorderBrush="#e0e0e0" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="⚡ Quick Stats" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="txtQuickStats" Text="Ready to assign" FontSize="11" TextWrapping="Wrap"/>
+                            <StackPanel x:Name="pnlWorkloadIndicators" Orientation="Horizontal" Margin="0,5,0,0" Visibility="Collapsed">
+                                <Border Background="#ffebee" CornerRadius="3" Padding="5,2" Margin="0,0,3,0">
+                                    <TextBlock x:Name="txtOverloadedCount" Text="0 🔴" FontSize="10" FontWeight="Bold" Foreground="#c62828"/>
+                                </Border>
+                                <Border Background="#e8f5e9" CornerRadius="3" Padding="5,2">
+                                    <TextBlock x:Name="txtUnderloadedCount" Text="0 🟢" FontSize="10" FontWeight="Bold" Foreground="#2e7d32"/>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Expander>
+
+            <!-- DataGrid for assignments -->
+            <DataGrid x:Name="dgAssignments" 
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True"
+                      RowStyle="{StaticResource WorkloadRowStyle}"
+                      MouseRightButtonUp="dgAssignments_MouseRightButtonUp">
+                <DataGrid.ContextMenu>
+                    <ContextMenu x:Name="ctxAssignments">
+                        <MenuItem Header="Copy All Assignments" Click="btnCopyAll_Click"/>
+                        <MenuItem Header="Copy Selected Person's Tasks" Click="btnCopySelected_Click"/>
+                        <Separator x:Name="sepSwap"/>
+                        <MenuItem x:Name="mnuSwapPerson" Header="Swap with Another Person..." Click="btnSwapPerson_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Export to CSV..." Click="btnExportCsv_Click"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="*"/>
+                    <DataGridTextColumn Header="Tasks" Binding="{Binding TaskCount}" Width="80">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Workload" Binding="{Binding WorkloadPercentage}" Width="90">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Assigned Tasks" Binding="{Binding Tasks}" Width="3*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Status bar -->
+            <Border Grid.Row="3" Background="{DynamicResource PanelBackgroundBrush}" Padding="10,5" Margin="0,10,0,0" CornerRadius="3">
+                <Grid>
+                    <TextBlock Name="txtStatus" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Name="txtConstraintInfo" HorizontalAlignment="Right" VerticalAlignment="Center" FontStyle="Italic" Opacity="0.7"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

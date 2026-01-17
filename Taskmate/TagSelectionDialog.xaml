@@ -1,0 +1,29 @@
+﻿<Window x:Class="Taskmate.TagSelectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Tag Assignment" Height="250" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Tag this assignment for easy retrieval:" FontSize="13" Margin="0,0,0,10"/>
+        
+        <TextBlock Grid.Row="1" Text="Select or enter a tag:" Margin="0,0,0,5"/>
+        <ComboBox x:Name="cmbTag" Grid.Row="2" Height="30" IsEditable="True" Margin="0,0,0,10"/>
+
+        <Button Grid.Row="3" Content="✏️ Manage Tags..." Width="120" Height="30" HorizontalAlignment="Left" Click="btnManageTags_Click"/>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Width="80" Height="32" Margin="0,0,10,0" Click="btnOk_Click" IsDefault="True"/>
+            <Button Content="Skip" Width="80" Height="32" Click="btnSkip_Click" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

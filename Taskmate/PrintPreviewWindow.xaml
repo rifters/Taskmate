@@ -1,0 +1,69 @@
+﻿<Window x:Class="Taskmate.PrintPreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Print Preview - Task Assignments" Height="700" Width="800"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="0" Background="{DynamicResource PanelBackgroundBrush}" Padding="10" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="🖨️ Print" Width="100" Height="35" Margin="0,0,10,0" Click="btnPrint_Click"/>
+                <Button Content="📋 Copy" Width="100" Height="35" Margin="0,0,10,0" Click="btnCopy_Click"/>
+                <Button Content="💾 Save as PDF" Width="120" Height="35" Click="btnSavePdf_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Print Content -->
+        <ScrollViewer Grid.Row="1" Background="White" Padding="40">
+            <StackPanel x:Name="printContent">
+                <!-- Header -->
+                <TextBlock Text="TASK ASSIGNMENTS" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <TextBlock x:Name="txtDate" FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                <TextBlock x:Name="txtTag" FontSize="12" HorizontalAlignment="Center" Margin="0,0,0,30" Opacity="0.7"/>
+
+                <!-- Assignments -->
+                <ItemsControl x:Name="icAssignments">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Padding="10,15" Margin="0,5">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                                        <TextBlock Text="{Binding Person}" FontSize="18" FontWeight="Bold" Margin="0,0,10,0"/>
+                                        <TextBlock FontSize="14" Foreground="Gray">
+                                            <Run Text="("/>
+                                            <Run Text="{Binding TaskCount}"/>
+                                            <Run Text=" tasks)"/>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="1" Text="{Binding Tasks}" TextWrapping="Wrap" FontSize="13" Margin="20,0,0,0"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Footer -->
+                <Border BorderBrush="Black" BorderThickness="0,2,0,0" Padding="10" Margin="0,30,0,0">
+                    <TextBlock x:Name="txtFooter" FontSize="10" HorizontalAlignment="Center" Opacity="0.6"/>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Bottom Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button Content="Close" Width="100" Height="35" Click="btnClose_Click" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

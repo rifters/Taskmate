@@ -1,0 +1,119 @@
+﻿<Window x:Class="Taskmate.FirstRunDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Welcome to Task Assigner!" Height="650" Width="550"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#1976d2" CornerRadius="10" Padding="30,20" Margin="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="🎯 Welcome to Task Assigner!" 
+                           FontSize="28" 
+                           FontWeight="Bold" 
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,10"/>
+                <TextBlock Text="Fair Task Distribution Made Simple" 
+                           FontSize="16" 
+                           Foreground="WhiteSmoke"
+                           HorizontalAlignment="Center"
+                           FontStyle="Italic"
+                           Opacity="0.95"/>
+                <TextBlock Text="Version 1.0 • Built for Teams" 
+                           FontSize="11" 
+                           Foreground="WhiteSmoke"
+                           HorizontalAlignment="Center"
+                           Opacity="0.8"
+                           Margin="0,10,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Subtitle -->
+        <TextBlock Grid.Row="1" 
+                   Text="Let's get you started with some examples!" 
+                   FontSize="14" 
+                   HorizontalAlignment="Center" 
+                   Opacity="0.8"
+                   Margin="0,0,0,15"/>
+
+        <!-- Main Content -->
+        <StackPanel Grid.Row="2">
+            <TextBlock TextWrapping="Wrap" FontSize="13" Margin="0,0,0,15">
+                This appears to be your first time using Task Assigner. Would you like to copy some sample files to your desktop?
+            </TextBlock>
+
+            <Border Background="{DynamicResource PanelBackgroundBrush}" 
+                    Padding="15" 
+                    CornerRadius="5" 
+                    Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="Sample files include:" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <TextBlock Margin="10,0,0,5">📄 sample_tasks.txt - Example task list</TextBlock>
+                    <TextBlock Margin="10,0,0,5">👥 sample_people.txt - Example people list</TextBlock>
+                    <TextBlock Margin="10,0,0,5">📦 sample_group.tgroup - Pre-configured group</TextBlock>
+                    <TextBlock Margin="10,10,0,0" FontStyle="Italic" Opacity="0.7">
+                        Files will be copied to: Desktop\TaskAssigner Samples
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <CheckBox x:Name="chkDontShowAgain" Content="Don't show this again" Margin="0,0,0,0"/>
+        </StackPanel>
+
+        <!-- Getting Started Checklist (Scrollable, Bigger) -->
+        <Border Grid.Row="3" 
+                Background="#e3f2fd" 
+                Padding="0" 
+                Margin="0,15,0,0" 
+                CornerRadius="5">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                          HorizontalScrollBarVisibility="Disabled"
+                          Padding="15">
+                <StackPanel>
+                    <TextBlock Text="📋 Getting Started Checklist" 
+                               FontSize="15" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,12"/>
+                    <TextBlock TextWrapping="Wrap" 
+                               FontSize="12" 
+                               Margin="0,0,0,12">
+                        Complete these steps to get the most out of Task Assigner:
+                    </TextBlock>
+                    <TextBlock Text="☐ Load sample files to try it out" FontSize="12" Margin="0,4"/>
+                    <TextBlock Text="☐ Create your first assignment" FontSize="12" Margin="0,4"/>
+                    <TextBlock Text="☐ Save a group for your team" FontSize="12" Margin="0,4"/>
+                    <TextBlock Text="☐ Explore advanced features" FontSize="12" Margin="0,4"/>
+                    <TextBlock Text="☐ Set up automatic backup schedule (File → Backup Schedule)" FontSize="12" Margin="0,4"/>
+                    <TextBlock Text="☐ Configure security settings" FontSize="12" Margin="0,4"/>
+                    <TextBlock Text="☐ Review Help documentation" FontSize="12" Margin="0,4"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="4" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,15,0,0">
+            <Button Content="Yes, Copy Samples" 
+                    Width="140" 
+                    Height="35" 
+                    Margin="0,0,10,0" 
+                    Click="btnYes_Click" 
+                    IsDefault="True"/>
+            <Button Content="No Thanks" 
+                    Width="100" 
+                    Height="35" 
+                    Click="btnNo_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

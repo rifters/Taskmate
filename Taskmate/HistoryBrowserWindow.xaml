@@ -1,0 +1,88 @@
+﻿<Window x:Class="Taskmate.HistoryBrowserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Taskmate"
+        Title="Assignment History Browser" Height="650" Width="1000"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <local:TaskCountConverter x:Key="TaskCountConverter"/>
+    </Window.Resources>
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="Assignment History Archive" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <!-- Search and Filter Bar -->
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="txtSearch" Grid.Column="0" Height="30" VerticalContentAlignment="Center" 
+                     TextChanged="txtSearch_TextChanged" Margin="0,0,10,0" 
+                     ToolTip="Search by tag, group name, or person"/>
+            <TextBlock Grid.Column="1" Text="Tag:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox x:Name="cmbTags" Grid.Column="2" Height="30" SelectionChanged="cmbTags_SelectionChanged" Margin="0,0,10,0"/>
+            <TextBlock Grid.Column="3" Text="From:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <DatePicker x:Name="dtFrom" Grid.Column="4" Height="30" SelectedDateChanged="DateRange_Changed" Margin="0,0,10,0"/>
+            <TextBlock Grid.Column="5" Text="To:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <DatePicker x:Name="dtTo" Grid.Column="6" Height="30" SelectedDateChanged="DateRange_Changed"/>
+        </Grid>
+
+        <!-- History List -->
+        <DataGrid x:Name="dgHistory" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" 
+                  CanUserAddRows="False" SelectionChanged="dgHistory_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Date/Time" Binding="{Binding Timestamp, StringFormat='{}{0:g}'}" Width="150"/>
+                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="120"/>
+                <DataGridTextColumn Header="Group" Binding="{Binding GroupName}" Width="150"/>
+                <DataGridTextColumn Header="People" Binding="{Binding Assignments.Count}" Width="80"/>
+                <DataGridTextColumn Header="Total Tasks" Binding="{Binding Assignments, Converter={StaticResource TaskCountConverter}}" Width="100"/>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,10">
+            <Button Content="📊 View Stats" Width="120" Height="35" Margin="0,0,10,0" Click="btnViewStats_Click"/>
+            <Button Content="📋 Copy" Width="100" Height="35" Margin="0,0,10,0" Click="btnCopy_Click"/>
+            <Button Content="💾 Export CSV" Width="120" Height="35" Margin="0,0,10,0" Click="btnExport_Click"/>
+            <Button Content="📈 Generate Report" Width="140" Height="35" Margin="0,0,10,0" Click="btnReport_Click"/>
+            <Button Content="🔄 Load Assignment" Width="140" Height="35" Margin="0,0,10,0" Click="btnLoad_Click"/>
+            <Button Content="🗑️ Delete" Width="100" Height="35" Margin="0,0,10,0" Click="btnDelete_Click"/>
+        </StackPanel>
+
+        <!-- Assignment Details -->
+        <GroupBox Grid.Row="4" Header="Assignment Details" Padding="10">
+            <DataGrid x:Name="dgDetails" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="*"/>
+                    <DataGridTextColumn Header="Tasks" Binding="{Binding TaskCount}" Width="80"/>
+                    <DataGridTextColumn Header="Workload" Binding="{Binding WorkloadPercentage}" Width="100"/>
+                    <DataGridTextColumn Header="Assigned Tasks" Binding="{Binding Tasks}" Width="3*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <!-- Close Button -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <TextBlock x:Name="txtTotalCount" VerticalAlignment="Center" Margin="0,0,20,0" FontWeight="SemiBold"/>
+            <Button Content="Close" Width="100" Height="35" Click="btnClose_Click" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,57 @@
+﻿<Window x:Class="Taskmate.MobileExportDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mobile-Friendly Export" Height="500" Width="600"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Export for Mobile Devices" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+        <TextBlock Grid.Row="1" Text="Generate a mobile-optimized HTML page with QR code for easy access on phones" TextWrapping="Wrap" FontSize="12" Opacity="0.7" Margin="0,0,0,15"/>
+
+        <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="20" CornerRadius="5">
+            <StackPanel>
+                <TextBlock Text="📱 What you'll get:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,15"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="✓" FontSize="16" Foreground="Green" Margin="0,0,10,0"/>
+                    <TextBlock Text="Mobile-optimized HTML page" FontSize="13"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="✓" FontSize="16" Foreground="Green" Margin="0,0,10,0"/>
+                    <TextBlock Text="Dark mode support" FontSize="13"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="✓" FontSize="16" Foreground="Green" Margin="0,0,10,0"/>
+                    <TextBlock Text="QR code for quick access" FontSize="13"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="✓" FontSize="16" Foreground="Green" Margin="0,0,10,0"/>
+                    <TextBlock Text="Works offline (no internet needed)" FontSize="13"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="✓" FontSize="16" Foreground="Green" Margin="0,0,10,0"/>
+                    <TextBlock Text="Print QR code and post on bulletin board" FontSize="13"/>
+                </StackPanel>
+
+                <TextBlock Text="💡 Tip: Staff can scan the QR code to view their tasks instantly on their phones!" 
+                           TextWrapping="Wrap" FontSize="12" Opacity="0.8" Margin="0,20,0,0" FontStyle="Italic"/>
+            </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Generate Export" Width="130" Height="35" Margin="0,0,10,0" Click="btnGenerate_Click" IsDefault="True"/>
+            <Button Content="Cancel" Width="100" Height="35" Click="btnCancel_Click" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

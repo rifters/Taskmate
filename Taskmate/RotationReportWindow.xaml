@@ -1,0 +1,31 @@
+<Window x:Class="Taskmate.RotationReportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Rotation Report - Last 30 Days" Height="600" Width="800"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Task Rotation Report" FontSize="18" FontWeight="Bold" Margin="0,0,0,5"/>
+        <TextBlock Grid.Row="1" Text="Shows how many times each person has done each task in the last 30 days" FontSize="12" Opacity="0.7" Margin="0,0,0,15"/>
+
+        <DataGrid Grid.Row="2" x:Name="dgReport" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="150"/>
+                <DataGridTextColumn Header="Task" Binding="{Binding Task}" Width="*"/>
+                <DataGridTextColumn Header="Times Assigned" Binding="{Binding Count}" Width="120"/>
+                <DataGridTextColumn Header="Last Assigned" Binding="{Binding LastDate, StringFormat='{}{0:MM/dd/yyyy}'}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Clear Old Data (90+ days)" Width="170" Height="35" Margin="0,0,10,0" Click="btnClearOld_Click"/>
+            <Button Content="Close" Width="100" Height="35" Click="btnClose_Click" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

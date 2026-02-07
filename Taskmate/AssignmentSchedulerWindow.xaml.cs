@@ -83,23 +83,31 @@ namespace Taskmate
             if (dgScheduled.SelectedItem is ScheduledAssignment selected)
             {
                 var result = MessageBox.Show(
-                    $"Execute '{selected.Name}' now?\n\nThis will load the group and you can assign tasks.",
+                    $"Execute '{selected.Name}' now?\n\nThis will load the group and run the assignment.",
                     "Execute Assignment",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show(
-                        $"To execute this assignment:\n\n" +
-                        $"1. Close this window\n" +
-                        $"2. Load the group: {System.IO.Path.GetFileName(selected.GroupFilePath)}\n" +
-                        $"3. Click Assign Tasks\n\n" +
-                        $"Group file location:\n{selected.GroupFilePath}",
-                        "Execute Instructions",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    try
+                    {
+                        // Close this dialog first
+                        this.DialogResult = true;
+                        this.Close();
+                        
+                        // Pass the group file path back through tag so MainWindow can load it and execute
+                        this.Tag = selected.GroupFilePath;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error executing assignment: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Please select a scheduled assignment to execute.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

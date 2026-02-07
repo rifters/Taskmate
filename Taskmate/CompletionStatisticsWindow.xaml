@@ -1,0 +1,241 @@
+﻿<Window x:Class="Taskmate.CompletionStatisticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Taskmate"
+        Title="Completion Statistics Report" Height="800" Width="1000"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+    <Window.Resources>
+        <local:CompletionStatusColorConverter x:Key="CompletionStatusColorConverter"/>
+    </Window.Resources>
+    
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="📊 Completion Statistics Report" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <!-- Tabs for different statistics views -->
+        <TabControl Grid.Row="2" Margin="0,0,0,10">
+            <!-- Overall Statistics Tab -->
+            <TabItem Header="📈 Overall Statistics">
+                <DataGrid Margin="10" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Metric" Binding="{Binding Label}" Width="200"/>
+                        <DataGridTextColumn Header="Count" Binding="{Binding Value}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Percentage" Binding="{Binding Percentage}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Person Statistics Tab -->
+            <TabItem Header="👥 Person Statistics">
+                <DataGrid x:Name="dgPersonStats" Margin="10" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="150"/>
+                        <DataGridTextColumn Header="Assignments" Binding="{Binding TotalAssignments}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Total Tasks" Binding="{Binding TotalTasks}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Completed" Binding="{Binding CompletedTasks}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <!-- Completion Rate with Color Coding -->
+                        <DataGridTemplateColumn Header="Completion %" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
+                                        <Border.Background>
+                                            <MultiBinding Converter="{StaticResource CompletionStatusColorConverter}">
+                                                <Binding Path="CompletionRate"/>
+                                            </MultiBinding>
+                                        </Border.Background>
+                                        <TextBlock Text="{Binding CompletionRate, StringFormat=\{0:F1\}%}" 
+                                                 Foreground="White"
+                                                 FontWeight="Bold"
+                                                 FontSize="11"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Task Statistics Tab -->
+            <TabItem Header="📋 Task Statistics">
+                <DataGrid x:Name="dgTaskStats" Margin="10" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Task" Binding="{Binding Task}" Width="250"/>
+                        <DataGridTextColumn Header="Times Assigned" Binding="{Binding TimesAssigned}" Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Times Completed" Binding="{Binding TimesCompleted}" Width="130">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <!-- Completion Rate -->
+                        <DataGridTemplateColumn Header="Completion %" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
+                                        <Border.Background>
+                                            <MultiBinding Converter="{StaticResource CompletionStatusColorConverter}">
+                                                <Binding Path="CompletionRate"/>
+                                            </MultiBinding>
+                                        </Border.Background>
+                                        <TextBlock Text="{Binding CompletionRate, StringFormat=\{0:F1\}%}" 
+                                                 Foreground="White"
+                                                 FontWeight="Bold"
+                                                 FontSize="11"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Trend Analysis Tab -->
+            <TabItem Header="📅 Trend Analysis">
+                <DataGrid x:Name="dgTrendStats" Margin="10" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Complete" Binding="{Binding Completed}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#4caf50"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Partial" Binding="{Binding Partial}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#ff9800"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Incomplete" Binding="{Binding Incomplete}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#f44336"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <!-- Average Completion -->
+                        <DataGridTemplateColumn Header="Avg Completion %" Width="140">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
+                                        <Border.Background>
+                                            <MultiBinding Converter="{StaticResource CompletionStatusColorConverter}">
+                                                <Binding Path="AverageCompletion"/>
+                                            </MultiBinding>
+                                        </Border.Background>
+                                        <TextBlock Text="{Binding AverageCompletion, StringFormat=\{0:F1\}%}" 
+                                                 Foreground="White"
+                                                 FontWeight="Bold"
+                                                 FontSize="11"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Overall Statistics Grid (displayed at top) -->
+        <GroupBox Grid.Row="1" Header="Quick Summary" Margin="0,0,0,10">
+            <DataGrid x:Name="dgOverallStats" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" Height="100">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Metric" Binding="{Binding Label}" Width="200"/>
+                    <DataGridTextColumn Header="Count" Binding="{Binding Value}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Percentage" Binding="{Binding Percentage}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="📋 Copy to Clipboard" Width="150" Height="35" Margin="0,0,10,0" Click="btnExport_Click" Background="#e3f2fd"/>
+            <Button Content="📊 Export to Excel" Width="140" Height="35" Margin="0,0,10,0" Click="btnExportExcel_Click" Background="#e3f2fd"/>
+            <Button Content="📄 Export to PDF" Width="130" Height="35" Margin="0,0,10,0" Click="btnExportPDF_Click" Background="#fff3e0"/>
+            <Button Content="📁 Export to CSV" Width="130" Height="35" Margin="0,0,10,0" Click="btnExportCSV_Click" Background="#e3f2fd"/>
+            <Button Content="Close" Width="100" Height="35" Click="btnClose_Click" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

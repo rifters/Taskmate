@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Taskmate
 {
     public class AssignmentResult
@@ -8,10 +10,31 @@ namespace Taskmate
         public double Capacity { get; set; } = 1.0;
         public string WorkloadPercentage { get; set; } = "100%";
 
+        // Completion tracking
+        public List<string> CompletedTasks { get; set; } = new List<string>();
+        public bool IsPersonComplete { get; set; } = false;
+
+        // Tagging
+        public string CurrentTag { get; set; } = "Untagged";
+
         // NEW: Color coding properties
         public bool IsOverloaded => GetWorkloadValue() > 120;
         public bool IsUnderloaded => GetWorkloadValue() < 80;
         public bool IsSlightlyHigh => GetWorkloadValue() >= 100 && GetWorkloadValue() <= 120;
+
+        // Completion status properties
+        public int CompletedCount => CompletedTasks.Count;
+        public double CompletionPercentage => TaskCount > 0 ? (CompletedCount / (double)TaskCount) * 100 : 0;
+        public string CompletionStatus
+        {
+            get
+            {
+                if (TaskCount == 0) return "No Tasks";
+                if (CompletionPercentage >= 100) return "Complete";
+                if (CompletionPercentage > 0) return "Partial";
+                return "Incomplete";
+            }
+        }
 
         private double GetWorkloadValue()
         {

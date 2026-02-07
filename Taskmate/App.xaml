@@ -9,8 +9,31 @@
                 <ResourceDictionary Source="Themes/LightTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
-            <!-- MUST HAVE THIS -->
+            <!-- Converters -->
             <local:NullToBoolConverter x:Key="NullToBoolConverter"/>
+            <local:CompletionStatusColorConverter x:Key="CompletionStatusColorConverter"/>
+            
+            <!-- Logo Styles -->
+            <Style x:Key="LogoSmall" TargetType="Image">
+                <Setter Property="Source" Value="Assets/Icons/logo.png"/>
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+            
+            <Style x:Key="LogoMedium" TargetType="Image">
+                <Setter Property="Source" Value="Assets/Icons/logo.png"/>
+                <Setter Property="Width" Value="48"/>
+                <Setter Property="Height" Value="48"/>
+                <Setter Property="Margin" Value="10"/>
+            </Style>
+            
+            <Style x:Key="LogoLarge" TargetType="Image">
+                <Setter Property="Source" Value="Assets/Icons/logo.png"/>
+                <Setter Property="Width" Value="96"/>
+                <Setter Property="Height" Value="96"/>
+                <Setter Property="Margin" Value="15"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

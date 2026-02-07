@@ -27,6 +27,14 @@ namespace Taskmate
         public bool UseAssignmentNotes { get; set; } = false;
         public bool UseNotifications { get; set; } = false;
         public bool UseMobileExport { get; set; } = false;
+        public bool UseCompletionTracking { get; set; } = false;
+        public bool UseScheduledReports { get; set; } = false;
+        public bool UseEmailReports { get; set; } = false;
+        
+        // User-configurable options
+        public bool UseTagging { get; set; } = false;
+        public bool UseTaggingAtAssignment { get; set; } = false; // Tag assignments when created
+        public string AssignmentSaveLocation { get; set; } = ""; // Empty = default (application directory)
     }
 
     public static class FeatureManager

@@ -1,0 +1,86 @@
+﻿<Window x:Class="Taskmate.EmailSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Email Settings" Height="550" Width="600"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Logo Header -->
+        <Border Grid.Row="0" Background="#e3f2fd" Padding="10" CornerRadius="4" Margin="0,0,0,15" BorderBrush="#1976d2" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource LogoSmall}" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                    <TextBlock Text="📧 Email Report Settings" FontSize="16" FontWeight="Bold" Foreground="#1976d2"/>
+                    <TextBlock Text="Configure SMTP settings for automated report delivery" FontSize="10" Opacity="0.7"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Settings Panel -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- SMTP Server -->
+                <TextBlock Text="SMTP Server:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtSmtpServer" Height="32" Padding="10,8" Margin="0,0,0,15" Text="smtp.gmail.com"/>
+
+                <!-- SMTP Port -->
+                <TextBlock Text="SMTP Port:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtSmtpPort" Height="32" Padding="10,8" Margin="0,0,0,15" Text="587"/>
+
+                <!-- SSL/TLS -->
+                <CheckBox x:Name="chkUseSSL" Content="Use SSL/TLS" IsChecked="True" Margin="0,0,0,15"/>
+
+                <!-- From Email -->
+                <TextBlock Text="From Email Address:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtFromEmail" Height="32" Padding="10,8" Margin="0,0,0,5"/>
+                <TextBlock Text="Example: your-email@gmail.com" FontSize="10" Opacity="0.6" Margin="0,0,0,15"/>
+
+                <!-- From Name -->
+                <TextBlock Text="From Name:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtFromName" Height="32" Padding="10,8" Margin="0,0,0,15" Text="TaskAssigner Reports"/>
+
+                <!-- Username -->
+                <TextBlock Text="Username (Usually email):" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtUsername" Height="32" Padding="10,8" Margin="0,0,0,15"/>
+
+                <!-- Password -->
+                <TextBlock Text="Password (App Password for Gmail):" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <PasswordBox x:Name="pwdPassword" Height="32" Padding="10,8" Margin="0,0,0,5"/>
+                <TextBlock Text="For Gmail: Use App Password (not your Google password)" FontSize="10" Opacity="0.6" Margin="0,0,0,15"/>
+
+                <!-- Info Box -->
+                <Border Background="#e3f2fd" Padding="12" CornerRadius="4" Margin="0,15,0,0" BorderBrush="#1976d2" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="💡 Setup Instructions" FontWeight="Bold" Margin="0,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,8">
+                            <Run Text="Gmail:"/><Run Text=" Enable 2-Step Verification, then create an "/>
+                            <Hyperlink NavigateUri="https://support.google.com/accounts/answer/185833">App Password</Hyperlink>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" FontSize="11">
+                            <Run Text="Other providers: Use your email address as username and corresponding app password."/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Test & Action Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,20,0,0">
+            <Button x:Name="btnTestConnection" Content="🔌 Test Connection" Width="150" Height="35" Click="btnTestConnection_Click" Background="#2196f3" Foreground="White"/>
+            <TextBlock x:Name="txtTestStatus" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="11"/>
+        </StackPanel>
+
+        <!-- Save Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Save" Width="100" Height="35" Click="btnSave_Click" Background="#4caf50" Foreground="White" Margin="0,0,10,0"/>
+            <Button Content="Cancel" Width="100" Height="35" Click="btnCancel_Click" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

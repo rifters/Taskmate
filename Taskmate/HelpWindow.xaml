@@ -1,15 +1,24 @@
 ﻿<Window x:Class="Taskmate.HelpWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Task Assigner - Help" Height="650" Width="850"
-        WindowStartupLocation="CenterOwner">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Task Assigner - Help" Height="650" Width="850"
+    WindowStartupLocation="CenterOwner">
+<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0" Margin="10">
+        <!-- Logo Header -->
+        <Border Grid.Row="0" Background="#f5f5f5" Padding="10" CornerRadius="4" Margin="10,10,10,0">
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource LogoSmall}" VerticalAlignment="Center"/>
+                <TextBlock Text="Task Assigner Help &amp; Documentation" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#1976d2"/>
+            </StackPanel>
+        </Border>
+
+    <TabControl Grid.Row="1" Margin="10">
             <!-- Getting Started Tab -->
             <TabItem Header="🚀 Getting Started">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -160,7 +169,7 @@
 
                         <TextBlock Text="Undo and History:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
                         <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
-                            • Use <Run FontWeight="Bold">↩️ Undo (Ctrl+Z)</Run> to revert to the previous assignment
+                            • Use <Run FontWeight="Bold">↩️ Undo (Ctrl+Z)</Run> to revert to the previous session assignment
                         </TextBlock>
                         <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
                             • View session history via <Run FontWeight="Bold">Edit → View Session History</Run>
@@ -168,9 +177,39 @@
                         <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
                             • Browse ALL history (even from previous days) via <Run FontWeight="Bold">Edit → Browse All History (Ctrl+Shift+H)</Run>
                         </TextBlock>
-                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
-                            • All assignments are automatically saved permanently to your history archive
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            • Search by person, tag, or date in the history browser
                         </TextBlock>
+
+                        <TextBlock Text="NEW: Post Assignment Workflow" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5" Foreground="#d32f2f"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                            <Run FontWeight="Bold" Foreground="#d32f2f">Important Change!</Run> Assignments are NO LONGER automatically saved to history. Instead, use this new workflow:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            <Run Text="1. Press F5 → " FontWeight="Bold"/>
+                            <Run Text="Get random assignment (review on screen)"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            <Run Text="2. Press F5 again → " FontWeight="Bold"/>
+                            <Run Text="Get different random assignment (no history saved yet!)"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            <Run Text="3. Happy with assignment? → " FontWeight="Bold"/>
+                            <Run Text="Click 📌 Post button to save to permanent history"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">
+                            <Run Text="4. Ready for next batch → " FontWeight="Bold"/>
+                            <Run Text="Grid clears, start over with step 1"/>
+                        </TextBlock>
+
+                        <Border Background="#fff9c4" Padding="12" Margin="0,10,0,0" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="💡 Benefit of New Workflow" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="11">
+                                    You can now generate multiple assignments and choose the BEST one before committing to history. This prevents inflated historical data and gives you more control!
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
 
                         <TextBlock Text="Visual Workload Indicators:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
                         <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
@@ -238,6 +277,114 @@
                         <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Copy Selected Person's Tasks</TextBlock>
                         <TextBlock TextWrapping="Wrap" Margin="20,0,0,5">• Swap with Another Person</TextBlock>
                         <TextBlock TextWrapping="Wrap" Margin="20,0,0,15">• Export to CSV...</TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- History Management Tab (NEW) -->
+            <TabItem Header="📁 History Management">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Managing Assignment History" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Opening History Browser:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            Click <Run FontWeight="Bold">Edit → Browse All History (Ctrl+Shift+H)</Run> to open the Assignment History Archive window where you can view, search, filter, and manage all your saved assignments.
+                        </TextBlock>
+
+                        <TextBlock Text="Search and Filter Options:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run FontWeight="Bold">Search Box:</Run> Type to search by tag, group name, or person name
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run FontWeight="Bold">Tag Dropdown:</Run> Filter by specific assignment tags (e.g., "Lunch Service", "Dinner Service")
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            <Run FontWeight="Bold">Date Range:</Run> Select From and To dates to limit results to a specific time period
+                        </TextBlock>
+
+                        <TextBlock Text="NEW: Batch Delete (Delete Multiple at Once)" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5" Foreground="#d32f2f"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                            Quickly delete multiple assignments using the checkbox column:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            1. <Run FontWeight="Bold">Checkboxes:</Run> First column shows checkboxes for each assignment
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            2. <Run FontWeight="Bold">☑️ Select All:</Run> Check all visible assignments at once
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            3. <Run FontWeight="Bold">☐ Deselect All:</Run> Uncheck all assignments
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            4. <Run FontWeight="Bold">🗑️ Delete Selected:</Run> Delete all checked assignments with one click
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            5. Confirmation shows how many items will be deleted before you confirm
+                        </TextBlock>
+
+                        <TextBlock Text="NEW: Delete by Date Range" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5" Foreground="#d32f2f"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                            Remove all assignments from a specific time period in one action:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            1. Set the <Run FontWeight="Bold">From:</Run> date (when to start deleting)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            2. Set the <Run FontWeight="Bold">To:</Run> date (when to stop deleting)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            3. Click <Run FontWeight="Bold">🗑️ Delete by Date Range</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            4. Confirm - all assignments in that date range are instantly deleted
+                        </TextBlock>
+
+                        <TextBlock Text="Individual Delete:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                            For deleting a single assignment:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            1. Click on an assignment in the list to select it
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            2. Click the old <Run FontWeight="Bold">🗑️ Delete</Run> button (if still visible)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            3. Confirm deletion
+                        </TextBlock>
+
+                        <TextBlock Text="Other History Actions:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">📊 View Stats:</Run> See statistics for the selected assignment
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">📋 Copy:</Run> Copy selected assignment details to clipboard
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">💾 Export CSV:</Run> Save filtered results to Excel/Google Sheets
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">📈 Generate Report:</Run> Create a formatted report of assignments
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            • <Run FontWeight="Bold">🔄 Load Assignment:</Run> Load a historical assignment back to the main window
+                        </TextBlock>
+
+                        <Border Background="#e3f2fd" Padding="12" Margin="0,15,0,0" CornerRadius="4" BorderBrush="#1976d2" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="💡 Pro Tips" FontSize="12" FontWeight="Bold" Margin="0,0,0,8" Foreground="#1976d2"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                                    • <Run FontWeight="Bold">Combine filters:</Run> Use search + tag + date range together for precise control
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                                    • <Run FontWeight="Bold">Clean up regularly:</Run> Delete old assignments to keep history manageable
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="11">
+                                    • <Run FontWeight="Bold">Backup before bulk delete:</Run> Use File → Backup All Data first if deleting lots of data
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -389,6 +536,33 @@
                             Access: Edit → Task Properties → Select multiple → Bulk Edit Selected
                         </TextBlock>
 
+                        <TextBlock Text="✅ Task Completion Tracking" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5" Foreground="#2e7d32"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Track which tasks are completed as work progresses. Mark individual tasks as done, view completion status across all assignments, and analyze completion trends over time.
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Main Features:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Check off individual tasks as completed</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Mark entire person complete with one click</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Color-coded completion status (Green/Yellow/Red)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• Update completion status after posting to history</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• View detailed completion statistics and trends</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">How to Use:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">1. <Run FontWeight="Bold">Enable Feature:</Run> Settings → Advanced Features → Task Completion Tracking</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">2. <Run FontWeight="Bold">During Assignment:</Run> Expand person's row → Check boxes for completed tasks</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">3. <Run FontWeight="Bold">Quick Complete:</Run> Click "✓ Mark All Complete" button for entire person</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">4. <Run FontWeight="Bold">Post &amp; View:</Run> Click "📌 Post" → View in history with completion status</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">5. <Run FontWeight="Bold">Update Later:</Run> Open history → Select assignment → Click "✏️ Edit Completion"</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            <Run FontWeight="Bold">Viewing Statistics:</Run>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">In History:</Run> Click "View Completion Stats" button</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Filter by Status:</Run> Use "Status" dropdown (Complete/Partial/Incomplete)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">• <Run FontWeight="Bold">Export Data:</Run> Generate CSV or copy to clipboard</TextBlock>
+
                         <!-- OUTPUT & ANALYTICS -->
                         <TextBlock Text="Output &amp; Analytics" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" Foreground="#1976d2"/>
 
@@ -513,6 +687,293 @@
                                 </TextBlock>
                                 <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,10,0,0" FontStyle="Italic">
                                     Disabled features are automatically hidden from menus, keeping your workspace clean and simple!
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Person History Tab -->
+            <TabItem Header="👤 Person History">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Person Task History" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="What is Person History?" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            Person History shows a complete record of ALL tasks assigned to a specific person across all assignments. This is perfect for analyzing fairness, identifying overload patterns, and understanding assignment trends over time.
+                        </TextBlock>
+
+                        <TextBlock Text="Accessing Person History:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            Click <Run FontWeight="Bold">Tools → Person Task History</Run> from the main menu. A window opens showing all people in your history.
+                        </TextBlock>
+
+                        <TextBlock Text="How to Use:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run Text="1. Select a Person" FontWeight="Bold"/>
+                            <Run Text=" - Choose from the dropdown to see their assignment history"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run Text="2. Review Statistics" FontWeight="Bold"/>
+                            <Run Text=" - See total assignments, avg tasks, and fairness metrics"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run Text="3. Filter by Dates" FontWeight="Bold"/>
+                            <Run Text=" - (Optional) Select start/end dates to narrow results"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run Text="4. Click Filter" FontWeight="Bold"/>
+                            <Run Text=" - Apply your date range selection"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            <Run Text="5. Review Detailed Grid" FontWeight="Bold"/>
+                            <Run Text=" - See every assignment with date, group, tasks, and workload %"/>
+                        </TextBlock>
+
+                        <TextBlock Text="Statistics Explained:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run FontWeight="Bold">Total Assignments:</Run> How many times this person was included in an assignment
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run FontWeight="Bold">Avg Tasks:</Run> Average number of tasks per assignment (shows if consistent)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run FontWeight="Bold">Total Tasks:</Run> Combined tasks across all assignments
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run FontWeight="Bold">Highest Assignment:</Run> Maximum tasks in a single assignment
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            <Run FontWeight="Bold">Lowest Assignment:</Run> Minimum tasks in a single assignment
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            <Run FontWeight="Bold">Assignment Count:</Run> Total number of assignments (same as Total Assignments)
+                        </TextBlock>
+
+                        <TextBlock Text="Grid Columns:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">Date</Run> - When this assignment occurred
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">Group</Run> - Which group/project it belonged to
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">Tag</Run> - Assignment tag/category
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">Tasks Assigned</Run> - How many tasks for this person
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">Workload %</Run> - Percentage vs average (100% = fair)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            • <Run FontWeight="Bold">Tasks</Run> - Actual list of task names
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            • <Run FontWeight="Bold">Notes</Run> - Any notes added to that assignment
+                        </TextBlock>
+
+                        <TextBlock Text="Common Use Cases:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,10"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,5">
+                            💼 <Run FontWeight="Bold">Manager Review:</Run> Identify if someone is being overloaded consistently
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            ⚖️ <Run FontWeight="Bold">Fairness Audit:</Run> Verify long-term fairness across assignments
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            📊 <Run FontWeight="Bold">Pattern Analysis:</Run> See if they get harder/easier tasks
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">
+                            👥 <Run FontWeight="Bold">Team Balance:</Run> Compare across multiple people
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            📈 <Run FontWeight="Bold">Performance Discussion:</Run> Use data for employee conversations
+                        </TextBlock>
+
+                        <Border Background="#e8f5e9" Padding="12" Margin="0,15,0,0" CornerRadius="4" BorderBrush="#4caf50" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="✨ Pro Tip" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2e7d32"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="11">
+                                    Export the grid data for deeper analysis in Excel! Right-click or use Copy to get data you can paste into spreadsheets for trend analysis.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Performance Dashboard Tab (NEW) -->
+            <TabItem Header="📊 Performance Dashboard">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Real-Time Performance Analytics" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Overview" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            The Performance Dashboard provides real-time analytics on completion rates, person performance, and assignment trends. Perfect for managers who want a quick overview of team productivity.
+                        </TextBlock>
+
+                        <TextBlock Text="Accessing the Dashboard:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            <Run FontWeight="Bold">From History Browser:</Run> Click "📈 Dashboard" button to open the Performance Dashboard window
+                        </TextBlock>
+
+                        <TextBlock Text="Dashboard Components:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,10"/>
+
+                        <TextBlock Text="1. Key Metrics Cards" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10">
+                            Five metric cards at the top showing: Total Assignments, Average Completion %, Fully Completed count, Partial count, and Incomplete count. Each card updates in real-time as you filter data.
+                        </TextBlock>
+
+                        <TextBlock Text="2. Visual Charts (3 Charts)" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            • <Run FontWeight="Bold">Completion Trend Chart:</Run> Line chart showing monthly completion averages over time
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            • <Run FontWeight="Bold">Status Distribution Chart:</Run> Pie chart showing Complete/Partial/Incomplete breakdown
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">
+                            • <Run FontWeight="Bold">Person Performance Chart:</Run> Bar chart ranking top 10 performers by completion %
+                        </TextBlock>
+
+                        <TextBlock Text="3. Performance Analysis Tables" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            • <Run FontWeight="Bold">Top Performers:</Run> Shows top people by completion rate with their percentage
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">
+                            • <Run FontWeight="Bold">Most Incomplete Tasks:</Run> Shows tasks that have highest incomplete rate
+                        </TextBlock>
+
+                        <TextBlock Text="4. Recent Activity Timeline" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10">
+                            Last 20 assignments with date, tag, group, people count, and completion percentage. Helps track recent work.
+                        </TextBlock>
+
+                        <TextBlock Text="Filtering the Dashboard:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            • <Run FontWeight="Bold">Date Range:</Run> Select "From" and "To" dates to narrow analysis to specific period
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">
+                            • <Run FontWeight="Bold">Person Filter:</Run> Select specific person to see only their assignments and metrics
+                        </TextBlock>
+
+                        <TextBlock Text="Exporting Dashboard Data:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,10">
+                            Click "📊 Export Dashboard" button to copy all dashboard metrics and analysis to clipboard for pasting into reports or email.
+                        </TextBlock>
+
+                        <Border Background="#e8f5e9" Padding="12" Margin="0,15,0,0" CornerRadius="4" BorderBrush="#2e7d32" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="💡 Pro Tips" FontSize="12" FontWeight="Bold" Margin="0,0,0,8" Foreground="#2e7d32"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                                    • Refresh dashboard with ↻ button to get latest data
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                                    • Charts update instantly when you change filters
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="11">
+                                    • Use date range filter to analyze specific projects or time periods
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Completion Analytics Tab -->
+            <TabItem Header="📊 Completion Analytics">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Completion Statistics &amp; Analytics" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Overview" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,15">
+                            The Completion Statistics window provides comprehensive analytics on task completion rates, person performance, and trends over time. Perfect for understanding which tasks get completed and identifying patterns.
+                        </TextBlock>
+
+                        <TextBlock Text="Accessing Completion Statistics:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">
+                            <Run FontWeight="Bold">From History Browser:</Run> Select any assignment → Click "📊 View Stats" button → Opens Completion Statistics window
+                        </TextBlock>
+
+                        <TextBlock Text="Four Analytics Tabs:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,10"/>
+
+                        <TextBlock Text="1. 📈 Overall Statistics" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Bird's-eye view of your entire assignment history:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">• <Run FontWeight="Bold">Total Assignments</Run> - How many total assignments created</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Completed</Run> - Assignments with 100% tasks done</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Partial</Run> - Assignments with some tasks done (1-99%)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Incomplete</Run> - Assignments with no tasks marked done</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">• <Run FontWeight="Bold">Average Completion</Run> - Overall completion percentage across all assignments</TextBlock>
+
+                        <TextBlock Text="2. 👥 Person Statistics" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Individual performance metrics for each person:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">• <Run FontWeight="Bold">Person</Run> - Name of the individual</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Total Assignments</Run> - How many times they were assigned</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Total Tasks</Run> - Combined task count across all assignments</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Completed Tasks</Run> - How many they completed</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Completion %</Run> - Color-coded completion rate (Green/Yellow/Red)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">• <Run FontWeight="Bold">Status</Run> - Overall completion status (Complete/Partial/Incomplete)</TextBlock>
+
+                        <TextBlock Text="3. 📋 Task Statistics" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Analyze which tasks get completed consistently:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">• <Run FontWeight="Bold">Task Name</Run> - The task description</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Times Assigned</Run> - How often this task was given</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Times Completed</Run> - How many times it was finished</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Completion %</Run> - Color-coded completion rate</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">• <Run FontWeight="Bold">Status</Run> - Always Done / Sometimes Done / Never Done</TextBlock>
+
+                        <TextBlock Text="4. 📅 Trend Analysis" FontSize="13" FontWeight="Bold" Margin="0,10,0,5" Foreground="#1976d2"/>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                            Month-by-month completion trends:
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">• <Run FontWeight="Bold">Month</Run> - Year and month (YYYY-MM)</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Complete (Green)</Run> - Fully completed assignments</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Partial (Yellow)</Run> - Partially completed assignments</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">• <Run FontWeight="Bold">Incomplete (Red)</Run> - Unfinished assignments</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,15">• <Run FontWeight="Bold">Avg Completion %</Run> - Average completion for that month</TextBlock>
+
+                        <TextBlock Text="Color Coding Guide:" FontSize="14" FontWeight="SemiBold" Margin="0,15,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">🟢 <Run FontWeight="Bold">Green (100%)</Run> - Fully completed</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,5">🟡 <Run FontWeight="Bold">Yellow (1-99%)</Run> - Partially completed</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,15">🔴 <Run FontWeight="Bold">Red (0%)</Run> - Not completed</TextBlock>
+
+                        <TextBlock Text="Exporting Data:" FontSize="14" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                        <TextBlock TextWrapping="Wrap" Margin="15,5,0,3">
+                            • <Run FontWeight="Bold">📋 Copy to Clipboard:</Run> Copy all statistics as formatted text for email/reports
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            • <Run FontWeight="Bold">📊 Export to Excel:</Run> Create professional .xlsx workbook with 4 formatted sheets
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,3">
+                            • <Run FontWeight="Bold">📄 Export to PDF:</Run> Generate universal PDF reports (no software needed to view)
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="15,0,0,10">
+                            • <Run FontWeight="Bold">📁 Export to CSV:</Run> Export as CSV spreadsheet for import into other tools
+                        </TextBlock>
+
+                        <Border Background="#e8f5e9" Padding="12" Margin="0,15,0,0" CornerRadius="4" BorderBrush="#2e7d32" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="💡 Use Cases" FontSize="12" FontWeight="Bold" Margin="0,0,0,8" Foreground="#2e7d32"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                                    • <Run FontWeight="Bold">Manager Reviews:</Run> Identify which tasks are consistently incomplete
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                                    • <Run FontWeight="Bold">Performance Analysis:</Run> See which people complete more tasks
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,0,0,5">
+                                    • <Run FontWeight="Bold">Trend Spotting:</Run> Identify seasonal patterns in completion
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="11">
+                                    • <Run FontWeight="Bold">Reports &amp; Documentation:</Run> Export data for management reviews
                                 </TextBlock>
                             </StackPanel>
                         </Border>
@@ -979,7 +1440,7 @@
         </TabControl>
 
         <!-- Close Button -->
-        <Button Grid.Row="1" Content="Close" Width="100" Height="35" Margin="10" 
+        <Button Grid.Row="2" Content="Close" Width="100" Height="35" Margin="10" 
                 HorizontalAlignment="Right" Click="btnClose_Click" IsDefault="True"/>
     </Grid>
 </Window>

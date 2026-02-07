@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Taskmate
 {
@@ -225,6 +226,8 @@ namespace Taskmate
             if (ofd.ShowDialog() == true)
             {
                 tasks = ReadListFromFile(ofd.FileName);
+                currentGroupName = string.Empty;
+                currentGroupTag = "Untagged"; // Reset tag when loading new file
                 txtStatus.Text = $"Loaded {tasks.Count} tasks.";
             }
         }
@@ -241,6 +244,8 @@ namespace Taskmate
             {
                 people = ReadListFromFile(ofd.FileName);
                 InitializeCapacities();
+                currentGroupName = string.Empty;
+                currentGroupTag = "Untagged"; // Reset tag when loading new file
                 txtStatus.Text = $"Loaded {people.Count} people.";
             }
         }
@@ -332,9 +337,25 @@ namespace Taskmate
             {
                 try
                 {
+                    // Ask for tag if tagging is enabled
+                    string groupTag = "Untagged";
+                    if (features.UseTagging)
+                    {
+                        var tagDialog = new TagSelectionDialog
+                        {
+                            Owner = this
+                        };
+
+                        if (tagDialog.ShowDialog() == true)
+                        {
+                            groupTag = tagDialog.SelectedTag;
+                        }
+                    }
+
                     var group = new TaskGroup
                     {
                         Name = inputDialog.ResponseText,
+                        Tag = groupTag,
                         Tasks = new List<string>(tasks),
                         People = new List<string>(people),
                         Capacities = new Dictionary<string, double>(peopleCapacities),
@@ -344,7 +365,8 @@ namespace Taskmate
                         TaskWeights = new Dictionary<string, int>(taskWeights),
                         TaskNotes = new Dictionary<string, string>(taskNotes),
                         TaskTimeEstimates = new Dictionary<string, int>(taskTimeEstimates),
-                        TaskCategoryAssignments = new Dictionary<string, string>(taskCategoryAssignments)
+                        TaskCategoryAssignments = new Dictionary<string, string>(taskCategoryAssignments),
+                        Constraints = new Dictionary<string, List<string>>(constraints.Exclusions)
                     };
 
                     SaveFileDialog sfd = new SaveFileDialog
@@ -398,6 +420,9 @@ namespace Taskmate
                 {
                     tasks = new List<string>(group.Tasks);
                     people = new List<string>(group.People);
+                    currentGroupName = group.Name;
+                    currentGroupTag = group.Tag ?? "Untagged"; // Store group tag for auto-tagging assignments
+                    
                     
                     if (group.Capacities != null && group.Capacities.Count > 0)
                         peopleCapacities = new Dictionary<string, double>(group.Capacities);
@@ -423,7 +448,24 @@ namespace Taskmate
                     if (group.TaskCategoryAssignments != null)
                         taskCategoryAssignments = new Dictionary<string, string>(group.TaskCategoryAssignments);
                     
+                    // Load constraints
+                    if (group.Constraints != null && group.Constraints.Count > 0)
+                    {
+                        constraints = new TaskConstraint();
+                        foreach (var kvp in group.Constraints)
+                        {
+                            constraints.Exclusions[kvp.Key] = new List<string>(kvp.Value);
+                        }
+                        UpdateConstraintInfo();
+                    }
+                    else
+                    {
+                        constraints = new TaskConstraint();
+                    }
+                    
                     currentGroupName = group.Name;
+                    currentGroupTag = group.Tag ?? "Untagged"; // Store group tag for auto-tagging assignments
+                    
                     
                     AddToRecentGroups(filePath);
                     txtStatus.Text = $"Loaded group '{group.Name}': {tasks.Count} tasks, {people.Count} people";
@@ -459,8 +501,25 @@ namespace Taskmate
                 var randomizedTasks = tasks.OrderBy(x => rng.Next()).ToList();
                 var assignments = AssignTasksWithConstraintsAndCapacity(randomizedTasks, randomizedPeople);
 
+                // Use group tag if available, otherwise ask for tag if feature enabled
+                string assignmentTag = currentGroupTag; // Use loaded group tag by default
+                if (assignmentTag == "Untagged" && features.UseTaggingAtAssignment)
+                {
+                    // Only ask for tag if no group tag is set and feature is enabled
+                    var tagDialog = new TagSelectionDialog
+                    {
+                        Owner = this
+                    };
+
+                    if (tagDialog.ShowDialog() == true)
+                    {
+                        assignmentTag = tagDialog.SelectedTag;
+                    }
+                }
+
                 // Calculate workload percentages
                 double avgTasks = assignments.Average(kvp => kvp.Value.Count);
+                
                 
                 currentAssignments = assignments.Select(a => new AssignmentResult
                 {
@@ -468,16 +527,42 @@ namespace Taskmate
                     TaskCount = a.Value.Count,
                     Tasks = string.Join(", ", a.Value),
                     Capacity = peopleCapacities.ContainsKey(a.Key) ? peopleCapacities[a.Key] : 1.0,
-                    WorkloadPercentage = avgTasks > 0 ? $"{(a.Value.Count / avgTasks * 100):F0}%" : "0%"
+                    WorkloadPercentage = avgTasks > 0 ? $"{(a.Value.Count / avgTasks * 100):F0}%" : "0%",
+                    CompletedTasks = new List<string>(),
+                    IsPersonComplete = false,
+                    CurrentTag = assignmentTag
                 }).ToList();
 
-                SaveToHistory(currentAssignments);
-                SaveToPersistentHistory(currentAssignments);
+                // Don't auto-save to history - wait for user to explicitly post/confirm the assignment
+                // SaveToHistory(currentAssignments);
+                // SaveToPersistentHistory(currentAssignments);
 
                 dgAssignments.ItemsSource = currentAssignments;
+                
+                // Populate task checkboxes if completion tracking is enabled
+                if (features.UseCompletionTracking)
+                {
+                    PopulateCompletionTracking();
+                }
 
-                File.WriteAllLines("assignments.txt", assignments.Select(a =>
-                    $"{a.Key}: {string.Join(", ", a.Value)}"));
+                // Save assignments to configured location
+                string defaultPath = AppContext.BaseDirectory;
+                string saveDirectory = string.IsNullOrWhiteSpace(features.AssignmentSaveLocation) 
+                    ? defaultPath
+                    : features.AssignmentSaveLocation;
+                string saveLocation = Path.Combine(saveDirectory, "assignments.txt");
+                
+                try
+                {
+                    Directory.CreateDirectory(saveDirectory);
+                    File.WriteAllLines(saveLocation, assignments.Select(a =>
+                        $"{a.Key}: {string.Join(", ", a.Value)}"));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Warning: Could not save assignments to {saveLocation}\n\nError: {ex.Message}", 
+                        "Save Location Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
 
                 int unavailableCount = people.Count - availablePeople.Count;
                 string availMsg = (features.UsePersonAvailability && unavailableCount > 0) 
@@ -514,58 +599,86 @@ namespace Taskmate
         {
             try
             {
-                // Ask for tag
-                var tagDialog = new TagSelectionDialog
+                // Ask for tag if tagging is enabled
+                string selectedTag = "Untagged";
+                
+                // If tagging at assignment time is enabled, use the CurrentTag from assignments
+                if (features.UseTaggingAtAssignment && assignments.Count > 0)
                 {
-                    Owner = this
-                };
-
-                if (tagDialog.ShowDialog() == true)
-                {
-                    string userNotes = string.Empty;
+                    selectedTag = assignments[0].CurrentTag; // All assignments have same tag
                     
-                    // Ask for notes if feature enabled
-                    if (features.UseAssignmentNotes)
+                    // Allow user to change tag during posting if desired
+                    var tagDialog = new TagSelectionDialog
                     {
-                        var notesDialog = new AddNotesDialog()
-                        {
-                            Owner = this
-                        };
-                        
-                        if (notesDialog.ShowDialog() == true)
-                        {
-                            userNotes = notesDialog.Notes;
-                        }
-                    }
-
-                    var persistentAssignment = new PersistentAssignment
-                    {
-                        Timestamp = DateTime.Now,
-                        Tag = tagDialog.SelectedTag,
-                        GroupName = !string.IsNullOrEmpty(GetCurrentGroupName()) ? GetCurrentGroupName() : "Unnamed Group",
-                        Assignments = new List<AssignmentResult>(assignments.Select(a => new AssignmentResult
-                        {
-                            Person = a.Person,
-                            TaskCount = a.TaskCount,
-                            Tasks = a.Tasks,
-                            WorkloadPercentage = a.WorkloadPercentage,
-                            Capacity = a.Capacity
-                        })),
-                        Notes = $"{assignments.Count} people, {assignments.Sum(a => a.TaskCount)} tasks",
-                        UserNotes = userNotes
+                        Owner = this
                     };
 
-                    AssignmentHistoryManager.SaveAssignment(persistentAssignment);
-                    
-                    // Track rotation if enabled
-                    if (features.UseAutoRotation)
+                    if (tagDialog.ShowDialog() == true)
                     {
-                        var assignmentDict = assignments.ToDictionary(
-                            a => a.Person, 
-                            a => a.Tasks.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList()
-                        );
-                        RotationTracker.RecordAssignments(assignmentDict);
+                        selectedTag = tagDialog.SelectedTag;
                     }
+                }
+                else if (features.UseTagging && !features.UseTaggingAtAssignment)
+                {
+                    // Original behavior: ask for tag only at post time
+                    var tagDialog = new TagSelectionDialog
+                    {
+                        Owner = this
+                    };
+
+                    if (tagDialog.ShowDialog() == true)
+                    {
+                        selectedTag = tagDialog.SelectedTag;
+                    }
+                    else
+                    {
+                        return; // User cancelled tagging
+                    }
+                }
+
+                string userNotes = string.Empty;
+                
+                // Ask for notes if feature enabled
+                if (features.UseAssignmentNotes)
+                {
+                    var notesDialog = new AddNotesDialog()
+                    {
+                        Owner = this
+                    };
+                    
+                    if (notesDialog.ShowDialog() == true)
+                    {
+                        userNotes = notesDialog.Notes;
+                    }
+                }
+
+                var persistentAssignment = new PersistentAssignment
+                {
+                    Timestamp = DateTime.Now,
+                    Tag = selectedTag,
+                    GroupName = !string.IsNullOrEmpty(GetCurrentGroupName()) ? GetCurrentGroupName() : "Unnamed Group",
+                    Assignments = new List<AssignmentResult>(assignments.Select(a => new AssignmentResult
+                    {
+                        Person = a.Person,
+                        TaskCount = a.TaskCount,
+                        Tasks = a.Tasks,
+                        WorkloadPercentage = a.WorkloadPercentage,
+                        Capacity = a.Capacity
+                    })),
+                    Notes = $"{assignments.Count} people, {assignments.Sum(a => a.TaskCount)} tasks",
+                    UserNotes = userNotes
+                };
+
+                AssignmentHistoryManager.SaveAssignment(persistentAssignment);
+                
+                // Track rotation if enabled
+                if (features.UseAutoRotation)
+                {
+                    var assignmentDict = assignments.ToDictionary(
+                        a => a.Person, 
+                        a => a.Tasks.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                    );
+                    RotationTracker.RecordAssignments(assignmentDict);
                 }
             }
             catch (Exception ex)
@@ -576,6 +689,7 @@ namespace Taskmate
         }
 
         private string currentGroupName = string.Empty;
+        private string currentGroupTag = "Untagged"; // Store tag from loaded group
 
         private string GetCurrentGroupName()
         {
@@ -613,20 +727,19 @@ namespace Taskmate
             }
 
             var unassignedTasks = new List<string>();
-            var taskQueue = new Queue<string>(tasks);
-            var peopleQueue = new Queue<string>(people);
+            int currentPersonIndex = 0;
 
-            // Round-robin assignment with constraints
-            while (taskQueue.Count > 0 && peopleQueue.Count > 0)
+            // Fair round-robin assignment with constraints
+            foreach (var task in tasks)
             {
-                string task = taskQueue.Dequeue();
                 bool taskAssigned = false;
+                int startingIndex = currentPersonIndex;
                 int attempts = 0;
-                int maxAttempts = people.Count * 2; // Try all people twice
 
-                while (!taskAssigned && attempts < maxAttempts && peopleQueue.Count > 0)
+                // Try assigning to each person in round-robin order
+                while (!taskAssigned && attempts < people.Count * 2)
                 {
-                    string currentPerson = peopleQueue.Dequeue();
+                    string currentPerson = people[currentPersonIndex % people.Count];
                     
                     // Check if this person can take this task
                     if (constraints.CanAssign(currentPerson, task))
@@ -635,17 +748,22 @@ namespace Taskmate
                         int currentCount = assignments[currentPerson].Count;
                         int target = targetTasksPerPerson[currentPerson];
                         
-                        if (currentCount < target || taskQueue.Count == 0)
+                        if (currentCount < target || unassignedTasks.Count == 0)
                         {
                             // Assign task to this person
                             assignments[currentPerson].Add(task);
                             taskAssigned = true;
+                            // Move to next person for fair distribution
+                            currentPersonIndex = (currentPersonIndex + 1) % people.Count;
                         }
                     }
                     
-                    // Put person back in queue for next task
-                    peopleQueue.Enqueue(currentPerson);
-                    attempts++;
+                    if (!taskAssigned)
+                    {
+                        // Try next person
+                        currentPersonIndex = (currentPersonIndex + 1) % people.Count;
+                        attempts++;
+                    }
                 }
 
                 if (!taskAssigned)
@@ -732,6 +850,34 @@ namespace Taskmate
             }
         }
 
+        private void btnPostAssignment_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentAssignments == null || currentAssignments.Count == 0)
+            {
+                MessageBox.Show("No assignments to post. Please assign tasks first.", "No Data", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                SaveToHistory(currentAssignments);
+                SaveToPersistentHistory(currentAssignments);
+                
+                txtStatus.Text = "✓ Assignment posted to history - Ready for new assignment";
+                btnUndo.IsEnabled = false;
+                mnuUndo.IsEnabled = false;
+                
+                // Clear for next assignment
+                currentAssignments = new List<AssignmentResult>();
+                dgAssignments.ItemsSource = null;
+                UpdateDashboard();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to post assignment: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void btnHistory_Click(object sender, RoutedEventArgs e)
         {
             if (assignmentHistory.Count == 0)
@@ -801,6 +947,91 @@ namespace Taskmate
             {
                 MessageBox.Show("Please select a person first.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        /// <summary>
+        /// Populate task checkboxes when a row's details visibility changes
+        /// </summary>
+        private void dgAssignments_RowDetailsVisibilityChanged(object sender, DataGridRowDetailsEventArgs e)
+        {
+            if (e.Row.Item is AssignmentResult assignment && e.Row.DetailsVisibility == Visibility.Visible)
+            {
+                // Get the row
+                var row = e.Row as DataGridRow;
+                if (row == null) return;
+
+                // Find the WrapPanel in the visual tree - it will be in the RowDetailsTemplate
+                var wrapPanel = FindVisualChild<WrapPanel>(row);
+                if (wrapPanel == null) return;
+
+                wrapPanel.Children.Clear();
+
+                // Parse tasks from comma-separated list
+                var tasks = assignment.Tasks
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(t => t.Trim())
+                    .ToList();
+
+                // Create checkboxes for each task
+                foreach (var task in tasks)
+                {
+                    var checkbox = new CheckBox
+                    {
+                        Content = task,
+                        Margin = new Thickness(10, 5, 10, 5),
+                        IsChecked = assignment.CompletedTasks.Contains(task),
+                        FontSize = 11
+                    };
+
+                    // Handle checkbox changes
+                    checkbox.Checked += (s, args) =>
+                    {
+                        if (!assignment.CompletedTasks.Contains(task))
+                        {
+                            assignment.CompletedTasks.Add(task);
+                        }
+                        UpdateCompletionStatus(assignment);
+                    };
+
+                    checkbox.Unchecked += (s, args) =>
+                    {
+                        assignment.CompletedTasks.Remove(task);
+                        UpdateCompletionStatus(assignment);
+                    };
+
+                    wrapPanel.Children.Add(checkbox);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Helper to find visual child elements
+        /// </summary>
+        private T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
+        {
+            if (obj == null) return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T typedChild)
+                    return typedChild;
+
+                var foundChild = FindVisualChild<T>(child);
+                if (foundChild != null)
+                    return foundChild;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Update completion status for a person based on completed tasks
+        /// </summary>
+        private void UpdateCompletionStatus(AssignmentResult assignment)
+        {
+            // Properties are auto-calculated from CompletedTasks, so just refresh the grid
+            dgAssignments.Items.Refresh();
         }
 
         private void btnExportCsv_Click(object sender, RoutedEventArgs e)
@@ -1232,6 +1463,9 @@ RIGHT-CLICK on the grid for more options!";
             // Assignment Scheduler
             mnuScheduler.Visibility = features.UseAssignmentScheduler ? Visibility.Visible : Visibility.Collapsed;
             
+            // Report Scheduler
+            mnuReportScheduler.Visibility = features.UseScheduledReports ? Visibility.Visible : Visibility.Collapsed;
+            
             // ===== OUTPUT & EXPORT FEATURES =====
             // Print Preview
             mnuPrintPreview.Visibility = features.UsePrintPreview ? Visibility.Visible : Visibility.Collapsed;
@@ -1349,7 +1583,66 @@ RIGHT-CLICK on the grid for more options!";
             {
                 Owner = this
             };
-            schedulerWindow.ShowDialog();
+            
+            if (schedulerWindow.ShowDialog() == true && schedulerWindow.Tag is string groupFilePath)
+            {
+                // Load the group and auto-execute assignment
+                try
+                {
+                    LoadGroupFromFile(groupFilePath);
+                    
+                    // Automatically trigger assignment after loading
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        btnAssign_Click(sender, e);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to execute scheduled assignment: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void btnReportScheduler_Click(object sender, RoutedEventArgs e)
+        {
+            if (!features.UseScheduledReports)
+            {
+                MessageBox.Show("Enable this feature in Settings → Advanced Features first.", 
+                    "Feature Disabled", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var scheduleWindow = new ReportScheduleWindow
+            {
+                Owner = this
+            };
+            scheduleWindow.ShowDialog();
+        }
+
+        private void btnEmailSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if (!features.UseEmailReports)
+            {
+                MessageBox.Show("Enable this feature in Settings → Advanced Features first.", 
+                    "Feature Disabled", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var emailWindow = new EmailSettingsWindow
+            {
+                Owner = this
+            };
+            emailWindow.ShowDialog();
+        }
+
+        private void btnPersonHistory_Click(object sender, RoutedEventArgs e)
+        {
+            var historyWindow = new PersonHistoryWindow
+            {
+                Owner = this
+            };
+            historyWindow.ShowDialog();
         }
 
         private void btnPrintPreview_Click(object sender, RoutedEventArgs e)
@@ -1546,6 +1839,39 @@ RIGHT-CLICK on the grid for more options!";
             }
         }
 
+        private void btnOpenHistoryFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string historyPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "TaskAssigner", "History");
+
+                if (!Directory.Exists(historyPath))
+                {
+                    MessageBox.Show(
+                        "History folder doesn't exist yet.\n\n" +
+                        "No assignments have been posted to history.\n\n" +
+                        "Location where it will be created:\n" +
+                        historyPath,
+                        "History Folder Not Found",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = historyPath,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open history folder: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void UpdateDashboard()
         {
             // Last Assignment Time
@@ -1642,9 +1968,89 @@ RIGHT-CLICK on the grid for more options!";
         }
 
         private void RefreshBackupScheduler()
+         {
+             // Force immediate check
+             ((App)Application.Current).CheckAndExecuteScheduledBackup();
+         }
+
+        // ===== COMPLETION TRACKING METHODS =====
+        
+        private void PopulateCompletionTracking()
         {
-            // Force immediate check
-            ((App)Application.Current).CheckAndExecuteScheduledBackup();
+            // This method is called when row details are created
+            // Event handler will be attached in XAML or dynamic binding
         }
-    }
-}
+
+        private void OnTaskCheckboxChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkbox && checkbox.Tag is string taskName && checkbox.DataContext is AssignmentResult assignment)
+            {
+                if (checkbox.IsChecked == true)
+                {
+                    if (!assignment.CompletedTasks.Contains(taskName))
+                        assignment.CompletedTasks.Add(taskName);
+                }
+                else
+                {
+                    assignment.CompletedTasks.Remove(taskName);
+                }
+
+                // Auto-update IsPersonComplete if all tasks are completed
+                UpdatePersonCompletionStatus(assignment);
+                
+                // Refresh grid to show updated completion status
+                dgAssignments.Items.Refresh();
+            }
+        }
+
+        private void UpdatePersonCompletionStatus(AssignmentResult assignment)
+        {
+            if (assignment.TaskCount > 0)
+            {
+                assignment.IsPersonComplete = assignment.CompletedCount >= assignment.TaskCount;
+            }
+        }
+
+        private void btnMarkAllComplete_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string personName)
+            {
+                var assignment = currentAssignments?.FirstOrDefault(a => a.Person == personName);
+                if (assignment != null)
+                {
+                    // Mark all tasks as complete
+                    var taskList = assignment.Tasks.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                   .Select(t => t.Trim())
+                                                   .ToList();
+                    
+                    assignment.CompletedTasks = new List<string>(taskList);
+                    assignment.IsPersonComplete = true;
+                    
+                    // Refresh grid
+                    dgAssignments.Items.Refresh();
+                    
+                    txtStatus.Text = $"✓ Marked all tasks complete for {personName}";
+                }
+            }
+        }
+
+        private void btnResetAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string personName)
+            {
+                var assignment = currentAssignments?.FirstOrDefault(a => a.Person == personName);
+                if (assignment != null)
+                {
+                    // Clear all completed tasks
+                    assignment.CompletedTasks.Clear();
+                    assignment.IsPersonComplete = false;
+                    
+                    // Refresh grid
+                    dgAssignments.Items.Refresh();
+                    
+                    txtStatus.Text = $"↩️ Reset completion for {personName}";
+                }
+            }
+        }
+     }
+ }

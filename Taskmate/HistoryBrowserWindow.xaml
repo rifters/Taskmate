@@ -6,6 +6,7 @@
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <local:TaskCountConverter x:Key="TaskCountConverter"/>
+        <local:CompletionStatusColorConverter x:Key="CompletionStatusColorConverter"/>
     </Window.Resources>
     
     <Grid Margin="10">
@@ -26,11 +27,15 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
             <TextBox x:Name="txtSearch" Grid.Column="0" Height="30" VerticalContentAlignment="Center" 
@@ -41,42 +46,127 @@
             <TextBlock Grid.Column="3" Text="From:" VerticalAlignment="Center" Margin="0,0,10,0"/>
             <DatePicker x:Name="dtFrom" Grid.Column="4" Height="30" SelectedDateChanged="DateRange_Changed" Margin="0,0,10,0"/>
             <TextBlock Grid.Column="5" Text="To:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <DatePicker x:Name="dtTo" Grid.Column="6" Height="30" SelectedDateChanged="DateRange_Changed"/>
+            <DatePicker x:Name="dtTo" Grid.Column="6" Height="30" SelectedDateChanged="DateRange_Changed" Margin="0,0,10,0"/>
+            <TextBlock Grid.Column="7" Text="Status:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox x:Name="cmbCompletionStatus" Grid.Column="8" Height="30" SelectionChanged="cmbCompletionStatus_SelectionChanged">
+                <ComboBoxItem Content="All Statuses" IsSelected="True"/>
+                <ComboBoxItem Content="Complete"/>
+                <ComboBoxItem Content="Partial"/>
+                <ComboBoxItem Content="Incomplete"/>
+            </ComboBox>
+            
+            <!-- Assignment Count Display (top-right) -->
+            <Border Grid.Column="10" Background="#f5f5f5" Padding="10,4" CornerRadius="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,0,0">
+                <TextBlock x:Name="lblTotalCount" FontSize="11" Opacity="0.8" FontStyle="Italic"/>
+            </Border>
         </Grid>
 
         <!-- History List -->
-        <DataGrid x:Name="dgHistory" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" 
+        <DataGrid x:Name="dgHistory" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="False" 
                   CanUserAddRows="False" SelectionChanged="dgHistory_SelectionChanged">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Date/Time" Binding="{Binding Timestamp, StringFormat='{}{0:g}'}" Width="150"/>
+                <DataGridCheckBoxColumn Header="Select" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
+                <DataGridTextColumn Header="Date/Time" Binding="{Binding Timestamp, StringFormat=\{0:g\}}" Width="150"/>
                 <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="120"/>
                 <DataGridTextColumn Header="Group" Binding="{Binding GroupName}" Width="150"/>
                 <DataGridTextColumn Header="People" Binding="{Binding Assignments.Count}" Width="80"/>
                 <DataGridTextColumn Header="Total Tasks" Binding="{Binding Assignments, Converter={StaticResource TaskCountConverter}}" Width="100"/>
+                
+                <!-- Completion Status Column with Color Coding -->
+                <DataGridTemplateColumn Header="Completion" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="3" Padding="8,4">
+                                <Border.Background>
+                                    <Binding Path="OverallCompletionPercentage" Converter="{StaticResource CompletionStatusColorConverter}"/>
+                                </Border.Background>
+                                <TextBlock Text="{Binding OverallCompletionPercentage, StringFormat=\{0:F0\}%}" 
+                                         HorizontalAlignment="Center"
+                                         Foreground="White"
+                                         FontWeight="Bold"
+                                         FontSize="11"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 
         <!-- Action Buttons -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,10">
-            <Button Content="📊 View Stats" Width="120" Height="35" Margin="0,0,10,0" Click="btnViewStats_Click"/>
-            <Button Content="📋 Copy" Width="100" Height="35" Margin="0,0,10,0" Click="btnCopy_Click"/>
-            <Button Content="💾 Export CSV" Width="120" Height="35" Margin="0,0,10,0" Click="btnExport_Click"/>
-            <Button Content="📈 Generate Report" Width="140" Height="35" Margin="0,0,10,0" Click="btnReport_Click"/>
-            <Button Content="🔄 Load Assignment" Width="140" Height="35" Margin="0,0,10,0" Click="btnLoad_Click"/>
-            <Button Content="🗑️ Delete" Width="100" Height="35" Margin="0,0,10,0" Click="btnDelete_Click"/>
-        </StackPanel>
+        <WrapPanel Grid.Row="3" Orientation="Horizontal" Margin="0,15,0,10" HorizontalAlignment="Left">
+            <Button Content="☑️ Select All" Width="90" Height="32" Margin="0,0,5,5" Click="btnSelectAll_Click" ToolTip="Select all visible assignments"/>
+            <Button Content="☐ Deselect All" Width="90" Height="32" Margin="0,0,5,5" Click="btnDeselectAll_Click" ToolTip="Deselect all assignments"/>
+            <Button Content="📊 View Stats" Width="90" Height="32" Margin="0,0,5,5" Click="btnViewCompletionStats_Click" ToolTip="View completion statistics"/>
+            <Button Content="📈 Dashboard" Width="90" Height="32" Margin="0,0,5,5" Click="btnViewDashboard_Click" ToolTip="Open dashboard"/>
+            <Button Content="📋 Copy" Width="70" Height="32" Margin="0,0,5,5" Click="btnCopy_Click"/>
+            <Button Content="💾 Export" Width="80" Height="32" Margin="0,0,5,5" Click="btnExport_Click"/>
+            <Button Content="📄 Report" Width="80" Height="32" Margin="0,0,5,5" Click="btnReport_Click"/>
+            <Button Content="🔄 Load" Width="70" Height="32" Margin="0,0,5,5" Click="btnLoad_Click"/>
+            <Button Content="✏️ Edit" Width="70" Height="32" Margin="0,0,5,5" Click="btnEditCompletion_Click" Background="#e3f2fd" ToolTip="Edit completion"/>
+            <Button Content="🗑️ Delete" Width="80" Height="32" Margin="0,0,5,5" Click="btnDeleteSelected_Click" Background="#ffebee" ToolTip="Delete selected"/>
+            <Button Content="🗑️ Del Range" Width="100" Height="32" Margin="0,0,5,5" Background="#ffebee" Click="btnDeleteByDateRange_Click" ToolTip="Delete by date"/>
+        </WrapPanel>
 
-        <!-- Assignment Details -->
-        <GroupBox Grid.Row="4" Header="Assignment Details" Padding="10">
-            <DataGrid x:Name="dgDetails" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="*"/>
-                    <DataGridTextColumn Header="Tasks" Binding="{Binding TaskCount}" Width="80"/>
-                    <DataGridTextColumn Header="Workload" Binding="{Binding WorkloadPercentage}" Width="100"/>
-                    <DataGridTextColumn Header="Assigned Tasks" Binding="{Binding Tasks}" Width="3*"/>
-                </DataGrid.Columns>
-            </DataGrid>
+        <!-- Assignment Details with Completion Editing -->
+        <GroupBox Grid.Row="4" Header="Assignment Details &amp; Completion Tracking" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <DataGrid Grid.Row="0" x:Name="dgDetails" AutoGenerateColumns="False" IsReadOnly="False" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="120"/>
+                        <DataGridTextColumn Header="Tasks Count" Binding="{Binding TaskCount}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Completed" Binding="{Binding CompletedCount, Mode=OneWay}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <!-- Completion % with color coding -->
+                        <DataGridTemplateColumn Header="Completion %" Width="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
+                                        <Border.Background>
+                                            <Binding Path="CompletionPercentage" Converter="{StaticResource CompletionStatusColorConverter}"/>
+                                        </Border.Background>
+                                        <TextBlock Text="{Binding CompletionPercentage, StringFormat=\{0:F0\}%}" 
+                                                 Foreground="White"
+                                                 FontWeight="Bold"
+                                                 FontSize="11"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTextColumn Header="Assigned Tasks" Binding="{Binding Tasks}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <!-- Completion Status Panel -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
+                    <Border Background="#f5f5f5" Padding="10" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📌 Assignment Last Updated: " VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="txtCompletionUpdatedAt" Text="Not tracked" VerticalAlignment="Center" Margin="5,0,0,0" Opacity="0.8"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
         </GroupBox>
 
         <!-- Close Button -->

@@ -155,6 +155,15 @@
 
                 <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15" Margin="0,0,0,10" CornerRadius="5">
                     <StackPanel>
+                        <CheckBox x:Name="chkCompletionTracking" Content="✅ Task Completion Tracking" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.8" Margin="20,0,0,0">
+                            Track which tasks are completed during assignments. Mark individual tasks complete with strikethrough, view completion status in history (Green/Yellow/Red).
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15" Margin="0,0,0,10" CornerRadius="5">
+                    <StackPanel>
                         <CheckBox x:Name="chkQuickSwap" Content="Quick Swap" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
                         <TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.8" Margin="20,0,0,0">
                             Quickly swap all tasks between two people for last-minute schedule changes.
@@ -188,6 +197,43 @@
                         <CheckBox x:Name="chkNotifications" Content="🔔 Notification System" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
                         <TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.8" Margin="20,0,0,0">
                             Desktop notifications when assignments change (email/SMS coming soon).
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Configuration Options -->
+                <TextBlock Text="Configuration" FontSize="14" FontWeight="Bold" Margin="0,15,0,10"/>
+
+                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15" Margin="0,0,0,10" CornerRadius="5">
+                    <StackPanel>
+                        <CheckBox x:Name="chkTagging" Content="Enable Task Tagging" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.8" Margin="20,0,0,0">
+                            Allow assigning tags to tasks for better organization and filtering.
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15" Margin="0,0,0,10" CornerRadius="5">
+                    <StackPanel>
+                        <CheckBox x:Name="chkTaggingAtAssignment" Content="🏷️ Tag at Assignment Time" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.8" Margin="20,0,0,0">
+                            Tag assignments when created (uses group tag if available) and allow re-tagging when posting. Useful for organizing by role/station (Cooks, Servers, Hosts, etc).
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15" Margin="0,0,0,10" CornerRadius="5">
+                    <StackPanel>
+                        <TextBlock Text="Assignment Save Location" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Opacity="0.8" Margin="0,0,0,8">
+                            Leave empty to save in application directory. Assignments will be saved to assignments.txt in this location.
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBox x:Name="txtAssignmentLocation" Height="35" Padding="10" FontSize="12" Margin="0,0,10,0" HorizontalAlignment="Stretch"/>
+                            <Button x:Name="btnBrowseLocation" Content="Browse" Width="80" Height="35" Click="btnBrowseLocation_Click"/>
+                        </StackPanel>
+                        <TextBlock TextWrapping="Wrap" FontSize="11" Opacity="0.7" Margin="0,0,0,0">
+                            Example: C:\Users\YourName\Documents\Assignments
                         </TextBlock>
                     </StackPanel>
                 </Border>

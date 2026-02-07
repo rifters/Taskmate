@@ -27,6 +27,13 @@ namespace Taskmate
 
             // Start backup scheduler
             InitializeBackupScheduler();
+
+            // Initialize report scheduler (commented out temporarily for debugging)
+            // var features = FeatureManager.GetFeatures();
+            // if (features.UseScheduledReports)
+            // {
+            //     ScheduledReportManager.Initialize();
+            // }
         }
 
         private void InitializeBackupScheduler()

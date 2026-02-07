@@ -1,10 +1,12 @@
-﻿<Window x:Class="Taskmate.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Task Assigner" Height="550" Width="950"
-        AllowDrop="True"
-        Drop="Window_Drop"
-        DragOver="Window_DragOver">
+﻿
+    <Window x:Class="Taskmate.MainWindow"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:local="clr-namespace:Taskmate"
+Title="Task Assigner" Height="550" Width="950"
+AllowDrop="True"
+Drop="Window_Drop"
+DragOver="Window_DragOver">
 
     <Window.InputBindings>
         <KeyBinding Key="A" Modifiers="Control" Command="{Binding AssignCommand}"/>
@@ -16,6 +18,9 @@
     </Window.InputBindings>
 
     <Window.Resources>
+        <!-- Completion Status Color Converter -->
+        <local:CompletionStatusColorConverter x:Key="CompletionStatusColorConverter"/>
+        
         <!-- Add this DataGrid Row Style for Color Coding -->
         <Style x:Key="WorkloadRowStyle" TargetType="DataGridRow">
             <Style.Triggers>
@@ -68,7 +73,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Backup Schedule..." Click="MenuBackupSchedule_Click"/>
-                <Separator/>
+                <MenuItem Header="Open History Folder" Click="btnOpenHistoryFolder_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📁" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Clear All Data (GDPR)" Click="btnClearAllData_Click">
                     <MenuItem.Icon>
@@ -117,6 +126,11 @@
                         <TextBlock Text="🔔" FontSize="14"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Email Settings..." Click="btnEmailSettings_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📧" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 
                 <!-- ADD THIS NEW MENU ITEM HERE -->
                 <MenuItem Header="Security Settings..." Click="btnSecuritySettings_Click">
@@ -136,7 +150,13 @@
                 <Separator/>
                 <MenuItem x:Name="mnuRotationReport" Header="View Rotation Report..." Click="btnRotationReport_Click"/>
                 <MenuItem x:Name="mnuAnalytics" Header="Analytics Dashboard..." Click="btnAnalytics_Click"/>
+                <MenuItem Header="Person Task History..." Click="btnPersonHistory_Click" ToolTip="View task history for a specific person"/>
                 <MenuItem x:Name="mnuScheduler" Header="Assignment Scheduler..." Click="btnScheduler_Click"/>
+                <MenuItem x:Name="mnuReportScheduler" Header="Report Schedule..." Click="btnReportScheduler_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📅" FontSize="14"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
                 <MenuItem x:Name="mnuMobileExport" Header="Mobile Export..." Click="btnMobileExport_Click"/>
             </MenuItem>
@@ -151,17 +171,26 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
+            <!-- Logo Header -->
+            <Border Grid.Row="0" Background="#f5f5f5" Padding="10" CornerRadius="4" Margin="0,0,0,10">
+                <StackPanel Orientation="Horizontal">
+                    <Image Style="{StaticResource LogoSmall}" VerticalAlignment="Center"/>
+                    <TextBlock Text="TaskAssigner Pro" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#1976d2"/>
+                </StackPanel>
+            </Border>
+
             <!-- Instructions -->
-            <TextBlock Grid.Row="0" 
+            <TextBlock Grid.Row="1" 
                        Text="Drag and drop your tasks.txt and people.txt files here, or use buttons below."
                        TextWrapping="Wrap" Margin="0,0,0,10" FontSize="13"/>
 
             <!-- Button Panel -->
-            <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid Grid.Row="2" Margin="0,0,0,10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -174,6 +203,7 @@
                     <Button Name="btnManagePeople" Content="✏️ Manage People" Width="130" Height="35" Margin="0,0,10,0" Click="btnManagePeople_Click"/>
                     <Button Name="btnConstraints" Content="🚫 Constraints" Width="110" Height="35" Margin="0,0,10,0" Click="btnConstraints_Click" ToolTip="Manage task exclusions"/>
                     <Button Name="btnAssign" Content="🎲 Assign (F5)" Width="120" Height="35" Margin="0,0,5,0" Click="btnAssign_Click" FontWeight="Bold"/>
+                    <Button Name="btnPostAssignment" Content="📌 Post" Width="80" Height="35" Margin="0,0,5,0" Click="btnPostAssignment_Click" ToolTip="Save assignment to history"/>
                     <Button Name="btnUndo" Content="↩️ Undo" Width="80" Height="35" Margin="0,0,10,0" Click="btnUndo_Click" IsEnabled="False" ToolTip="Undo last assignment (Ctrl+Z)"/>
                     <Button Name="btnShowStats" Content="📊 Stats" Width="80" Height="35" Margin="0,0,10,0" Click="btnShowStats_Click"/>
                     <Button Name="btnSettings" Content="⚙️" Width="45" Height="35" Click="btnSettings_Click" ToolTip="Settings"/>
@@ -233,10 +263,12 @@
 
             <!-- DataGrid for assignments -->
             <DataGrid x:Name="dgAssignments" 
+                      Grid.Row="3"
                       AutoGenerateColumns="False" 
-                      IsReadOnly="True"
+                      IsReadOnly="False"
                       RowStyle="{StaticResource WorkloadRowStyle}"
-                      MouseRightButtonUp="dgAssignments_MouseRightButtonUp">
+                      MouseRightButtonUp="dgAssignments_MouseRightButtonUp"
+                      RowDetailsVisibilityChanged="dgAssignments_RowDetailsVisibilityChanged">
                 <DataGrid.ContextMenu>
                     <ContextMenu x:Name="ctxAssignments">
                         <MenuItem Header="Copy All Assignments" Click="btnCopyAll_Click"/>
@@ -248,8 +280,23 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="*"/>
-                    <DataGridTextColumn Header="Tasks" Binding="{Binding TaskCount}" Width="80">
+                    <!-- Person Name -->
+                    <DataGridTextColumn Header="Person" Binding="{Binding Person}" Width="140"/>
+                    
+                    <!-- Complete Checkbox (if feature enabled) -->
+                    <DataGridCheckBoxColumn x:Name="colPersonComplete" 
+                                           Header="✓ Complete" 
+                                           Binding="{Binding IsPersonComplete, UpdateSourceTrigger=PropertyChanged}" 
+                                           Width="100">
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="CheckBox">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.ElementStyle>
+                    </DataGridCheckBoxColumn>
+                    
+                    <!-- Task Count -->
+                    <DataGridTextColumn Header="Tasks" Binding="{Binding TaskCount}" Width="70">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -257,19 +304,78 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Workload" Binding="{Binding WorkloadPercentage}" Width="90">
+                    
+                    <!-- Workload Percentage -->
+                    <DataGridTextColumn Header="Workload" Binding="{Binding WorkloadPercentage}" Width="80">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Assigned Tasks" Binding="{Binding Tasks}" Width="3*"/>
+                    
+                    <!-- Completion Status with Color Coding -->
+                    <DataGridTemplateColumn Header="Status" Width="110">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="3" Padding="8,4">
+                                    <Border.Background>
+                                        <Binding Path="CompletionPercentage" Converter="{StaticResource CompletionStatusColorConverter}"/>
+                                    </Border.Background>
+                                    <TextBlock Text="{Binding CompletionStatus}" 
+                                             HorizontalAlignment="Center"
+                                             Foreground="White"
+                                             FontWeight="Bold"
+                                             FontSize="11"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <!-- Assigned Tasks -->
+                    <DataGridTextColumn Header="Assigned Tasks" Binding="{Binding Tasks}" Width="*"/>
                 </DataGrid.Columns>
+                
+                <!-- Row Details - Expandable section for individual task completion -->
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <Border Background="#f5f5f5" Padding="20,15" BorderThickness="0,1,0,0" BorderBrush="#e0e0e0">
+                            <StackPanel>
+                                <TextBlock Text="Mark tasks complete:" FontSize="12" FontWeight="Bold" Margin="0,0,0,10"/>
+                                
+                                <!-- Task Checkboxes Container -->
+                                <WrapPanel x:Name="pnlTaskCheckboxes" Orientation="Horizontal" Margin="0,0,0,10">
+                                    <!-- Populated by code-behind -->
+                                </WrapPanel>
+                                
+                                <!-- Button Bar -->
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Button Content="✓ Mark All Complete" 
+                                           Width="150" Height="28" 
+                                           Margin="0,0,10,0"
+                                           Click="btnMarkAllComplete_Click"
+                                           Tag="{Binding Person}"
+                                           Background="#4caf50"
+                                           Foreground="White"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"/>
+                                    <Button Content="↩️ Reset All" 
+                                           Width="100" Height="28"
+                                           Click="btnResetAll_Click"
+                                           Tag="{Binding Person}"
+                                           Background="#ff9800"
+                                           Foreground="White"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
             </DataGrid>
 
             <!-- Status bar -->
-            <Border Grid.Row="3" Background="{DynamicResource PanelBackgroundBrush}" Padding="10,5" Margin="0,10,0,0" CornerRadius="3">
+            <Border Grid.Row="4" Background="{DynamicResource PanelBackgroundBrush}" Padding="10,5" Margin="0,10,0,0" CornerRadius="3">
                 <Grid>
                     <TextBlock Name="txtStatus" VerticalAlignment="Center" FontWeight="SemiBold"/>
                     <TextBlock Name="txtConstraintInfo" HorizontalAlignment="Right" VerticalAlignment="Center" FontStyle="Italic" Opacity="0.7"/>

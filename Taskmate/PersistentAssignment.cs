@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Taskmate
 {
@@ -14,5 +15,31 @@ namespace Taskmate
         
         // New field for user notes/comments
         public string UserNotes { get; set; } = string.Empty;
+        
+        // Completion tracking
+        public DateTime? CompletionUpdatedAt { get; set; }
+        
+        // UI field for batch selection (not persisted)
+        [System.Text.Json.Serialization.JsonIgnore]
+        public bool IsSelected { get; set; } = false;
+
+        // Completion status property
+        [System.Text.Json.Serialization.JsonIgnore]
+        public int TotalCompletedTasks
+        {
+            get => Assignments.Sum(a => a.CompletedCount);
+        }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public int TotalTasks
+        {
+            get => Assignments.Sum(a => a.TaskCount);
+        }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public double OverallCompletionPercentage
+        {
+            get => TotalTasks > 0 ? (TotalCompletedTasks / (double)TotalTasks) * 100 : 0;
+        }
     }
 }

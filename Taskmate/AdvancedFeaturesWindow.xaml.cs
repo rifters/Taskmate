@@ -1,4 +1,5 @@
 using System.Windows;
+using Microsoft.Win32;
 
 namespace Taskmate
 {
@@ -34,6 +35,15 @@ namespace Taskmate
             chkAssignmentNotes.IsChecked = features.UseAssignmentNotes;
             chkNotifications.IsChecked = features.UseNotifications;
             chkMobileExport.IsChecked = features.UseMobileExport;
+            chkCompletionTracking.IsChecked = features.UseCompletionTracking;
+            
+            // User-configurable options
+            if (chkTagging != null)
+                chkTagging.IsChecked = features.UseTagging;
+            if (chkTaggingAtAssignment != null)
+                chkTaggingAtAssignment.IsChecked = features.UseTaggingAtAssignment;
+            if (txtAssignmentLocation != null)
+                txtAssignmentLocation.Text = features.AssignmentSaveLocation ?? "";
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -59,7 +69,13 @@ namespace Taskmate
                 UsePerformanceAnalytics = chkPerformanceAnalytics.IsChecked == true,
                 UseAssignmentNotes = chkAssignmentNotes.IsChecked == true,
                 UseNotifications = chkNotifications.IsChecked == true,
-                UseMobileExport = chkMobileExport.IsChecked == true
+                UseMobileExport = chkMobileExport.IsChecked == true,
+                UseCompletionTracking = chkCompletionTracking.IsChecked == true,
+                
+                // User-configurable options
+                UseTagging = chkTagging?.IsChecked == true,
+                UseTaggingAtAssignment = chkTaggingAtAssignment?.IsChecked == true,
+                AssignmentSaveLocation = txtAssignmentLocation?.Text ?? ""
             };
 
             FeatureManager.SaveFeatures(features);
@@ -90,6 +106,9 @@ namespace Taskmate
             chkAssignmentNotes.IsChecked = true;
             chkNotifications.IsChecked = true;
             chkMobileExport.IsChecked = true;
+            chkCompletionTracking.IsChecked = true;
+            chkTagging.IsChecked = true;
+            chkTaggingAtAssignment.IsChecked = true;
         }
 
         private void btnDeselectAll_Click(object sender, RoutedEventArgs e)
@@ -111,6 +130,10 @@ namespace Taskmate
             chkAssignmentNotes.IsChecked = false;
             chkNotifications.IsChecked = false;
             chkMobileExport.IsChecked = false;
+            chkCompletionTracking.IsChecked = false;
+            chkTagging.IsChecked = false;
+            chkTaggingAtAssignment.IsChecked = false;
+            chkCompletionTracking.IsChecked = false;
         }
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
@@ -132,6 +155,22 @@ namespace Taskmate
         {
             DialogResult = false;
             Close();
+        }
+
+        private void btnBrowseLocation_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFolderDialog
+            {
+                Title = "Select Assignment Save Location"
+            };
+
+            if (!string.IsNullOrEmpty(txtAssignmentLocation.Text) && System.IO.Directory.Exists(txtAssignmentLocation.Text))
+                dialog.InitialDirectory = txtAssignmentLocation.Text;
+
+            if (dialog.ShowDialog() == true)
+            {
+                txtAssignmentLocation.Text = dialog.FolderName;
+            }
         }
     }
 }

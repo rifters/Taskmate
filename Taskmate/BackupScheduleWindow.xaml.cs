@@ -8,7 +8,7 @@ namespace Taskmate
 {
     public partial class BackupScheduleWindow : Window
     {
-        private BackupScheduleSettings settings;
+        private BackupScheduleSettings settings = null!;
 
         public BackupScheduleWindow()
         {
@@ -145,18 +145,18 @@ namespace Taskmate
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog
+            var dialog = new OpenFolderDialog
             {
-                Description = "Select backup location",
-                ShowNewFolderButton = true
+                Title = "Select backup location",
+                Multiselect = false
             };
 
-            if (!string.IsNullOrEmpty(txtBackupLocation.Text))
-                dialog.SelectedPath = txtBackupLocation.Text;
+            if (!string.IsNullOrEmpty(txtBackupLocation.Text) && Directory.Exists(txtBackupLocation.Text))
+                dialog.InitialDirectory = txtBackupLocation.Text;
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dialog.ShowDialog() == true)
             {
-                txtBackupLocation.Text = dialog.SelectedPath;
+                txtBackupLocation.Text = dialog.FolderName;
             }
         }
 
@@ -222,8 +222,8 @@ namespace Taskmate
                 settings.Frequency = (BackupFrequency)cmbFrequency.SelectedIndex;
                 settings.PreferredDay = (DayOfWeek)cmbDayOfWeek.SelectedIndex;
                 
-                int hour = int.Parse(cmbHour.SelectedItem.ToString());
-                int minute = int.Parse(cmbMinute.SelectedItem.ToString());
+                int hour = int.Parse(cmbHour.SelectedItem?.ToString() ?? "12");
+                int minute = int.Parse(cmbMinute.SelectedItem?.ToString() ?? "0");
                 bool isPM = cmbAmPm.SelectedIndex == 1;
                 
                 if (isPM && hour != 12) hour += 12;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Taskmate
 {
@@ -20,11 +21,11 @@ namespace Taskmate
 
         private void LoadHistory()
         {
-            allAssignments = AssignmentHistoryManager.GetAllAssignments();
+            allAssignments = AssignmentHistoryManager.GetAllAssignments() ?? new List<PersistentAssignment>();
             filteredAssignments = new List<PersistentAssignment>(allAssignments);
             
             // Load tags
-            var tags = AssignmentHistoryManager.GetAllTags();
+            var tags = AssignmentHistoryManager.GetAllTags() ?? new List<string>();
             cmbTags.Items.Clear();
             cmbTags.Items.Add("All Tags");
             foreach (var tag in tags)
@@ -42,8 +43,28 @@ namespace Taskmate
 
         private void UpdateDisplay()
         {
-            dgHistory.ItemsSource = filteredAssignments;
-            txtTotalCount.Text = $"{filteredAssignments.Count} assignment(s) found";
+            try
+            {
+                if (filteredAssignments == null)
+                {
+                    filteredAssignments = new List<PersistentAssignment>();
+                }
+
+                if (dgHistory != null)
+                {
+                    dgHistory.ItemsSource = null; // Clear first
+                    dgHistory.ItemsSource = filteredAssignments;
+                }
+
+                if (lblTotalCount != null)
+                {
+                    lblTotalCount.Text = $"{filteredAssignments.Count} assignment(s) found";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Error updating display: {ex.Message}\n\n{ex.StackTrace}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
         }
 
         private void ApplyFilters()
@@ -56,10 +77,10 @@ namespace Taskmate
                 string search = txtSearch.Text.ToLower();
                 filteredAssignments = filteredAssignments
                     .Where(a => 
-                        a.Tag.ToLower().Contains(search) ||
-                        a.GroupName.ToLower().Contains(search) ||
-                        a.Notes.ToLower().Contains(search) ||
-                        a.Assignments.Any(p => p.Person.ToLower().Contains(search)))
+                        (a.Tag?.ToLower().Contains(search) ?? false) ||
+                        (a.GroupName?.ToLower().Contains(search) ?? false) ||
+                        (a.Notes?.ToLower().Contains(search) ?? false) ||
+                        (a.Assignments?.Any(p => p.Person?.ToLower().Contains(search) ?? false) ?? false))
                     .ToList();
             }
 
@@ -68,7 +89,7 @@ namespace Taskmate
             {
                 string selectedTag = cmbTags.SelectedItem.ToString()!;
                 filteredAssignments = filteredAssignments
-                    .Where(a => a.Tag.Equals(selectedTag, StringComparison.OrdinalIgnoreCase))
+                    .Where(a => a.Tag?.Equals(selectedTag, StringComparison.OrdinalIgnoreCase) ?? false)
                     .ToList();
             }
 
@@ -79,6 +100,25 @@ namespace Taskmate
                 var end = dtTo.SelectedDate.Value.AddDays(1); // Include the entire end date
                 filteredAssignments = filteredAssignments
                     .Where(a => a.Timestamp >= start && a.Timestamp < end)
+                    .ToList();
+            }
+
+            // Completion status filter
+            if (cmbCompletionStatus.SelectedIndex > 0 && cmbCompletionStatus.SelectedItem != null)
+            {
+                string selectedStatus = cmbCompletionStatus.SelectedItem.ToString()!;
+                filteredAssignments = filteredAssignments
+                    .Where(a =>
+                    {
+                        double completionPercentage = a.OverallCompletionPercentage;
+                        return selectedStatus switch
+                        {
+                            "Complete" => completionPercentage >= 100,
+                            "Partial" => completionPercentage > 0 && completionPercentage < 100,
+                            "Incomplete" => completionPercentage == 0,
+                            _ => true
+                        };
+                    })
                     .ToList();
             }
 
@@ -100,15 +140,31 @@ namespace Taskmate
             ApplyFilters();
         }
 
+        private void cmbCompletionStatus_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ApplyFilters();
+        }
+
         private void dgHistory_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (dgHistory.SelectedItem is PersistentAssignment assignment)
             {
                 dgDetails.ItemsSource = assignment.Assignments;
+                
+                // Show when completion was last updated
+                if (assignment.CompletionUpdatedAt.HasValue)
+                {
+                    txtCompletionUpdatedAt.Text = assignment.CompletionUpdatedAt.Value.ToString("g");
+                }
+                else
+                {
+                    txtCompletionUpdatedAt.Text = "Not tracked";
+                }
             }
             else
             {
                 dgDetails.ItemsSource = null;
+                txtCompletionUpdatedAt.Text = "Not tracked";
             }
         }
 
@@ -126,6 +182,147 @@ namespace Taskmate
             else
             {
                 MessageBox.Show("Please select an assignment first.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void btnViewCompletionStats_Click(object sender, RoutedEventArgs e)
+        {
+            var statsWindow = new CompletionStatisticsWindow
+            {
+                Owner = this
+            };
+            statsWindow.ShowDialog();
+        }
+
+        private void btnViewDashboard_Click(object sender, RoutedEventArgs e)
+        {
+            var dashboardWindow = new PerformanceDashboardWindow
+            {
+                Owner = this
+            };
+            dashboardWindow.ShowDialog();
+        }
+
+        private void btnEditCompletion_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgHistory.SelectedItem is not PersistentAssignment assignment)
+            {
+                MessageBox.Show("Please select an assignment to edit completion status.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                // Create dialog for editing completion
+                var window = new Window
+                {
+                    Title = "Edit Task Completion",
+                    Width = 500,
+                    Height = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = this
+                };
+
+                var grid = new Grid { Margin = new Thickness(10) };
+                grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+                var scrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                var stackPanel = new StackPanel { Margin = new Thickness(0, 0, 0, 10) };
+
+                // Show each person with their tasks and checkboxes
+                foreach (var person in assignment.Assignments)
+                {
+                    var border = new Border
+                    {
+                        BorderBrush = System.Windows.Media.Brushes.LightGray,
+                        BorderThickness = new Thickness(1),
+                        CornerRadius = new CornerRadius(4),
+                        Padding = new Thickness(10),
+                        Margin = new Thickness(0, 0, 0, 10)
+                    };
+
+                    var personStack = new StackPanel();
+
+                    // Person name and completion status
+                    var personText = new TextBlock
+                    {
+                        Text = $"{person.Person} ({person.CompletedCount}/{person.TaskCount} complete)",
+                        FontWeight = System.Windows.FontWeights.Bold,
+                        Margin = new Thickness(0, 0, 0, 8)
+                    };
+                    personStack.Children.Add(personText);
+
+                    // Task checkboxes
+                    var tasks = person.Tasks.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(t => t.Trim())
+                                           .ToList();
+
+                    foreach (var task in tasks)
+                    {
+                        var checkbox = new CheckBox
+                        {
+                            Content = task,
+                            IsChecked = person.CompletedTasks.Contains(task),
+                            Margin = new Thickness(20, 4, 0, 4)
+                        };
+
+                        checkbox.Checked += (s, ev) =>
+                        {
+                            if (!person.CompletedTasks.Contains(task))
+                                person.CompletedTasks.Add(task);
+                        };
+
+                        checkbox.Unchecked += (s, ev) =>
+                        {
+                            person.CompletedTasks.Remove(task);
+                        };
+
+                        personStack.Children.Add(checkbox);
+                    }
+
+                    border.Child = personStack;
+                    stackPanel.Children.Add(border);
+                }
+
+                scrollViewer.Content = stackPanel;
+                grid.Children.Add(scrollViewer);
+                Grid.SetRow(scrollViewer, 0);
+
+                // Buttons
+                var buttonStack = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+                var saveButton = new Button { Content = "Save", Width = 80, Height = 35, Margin = new Thickness(0, 0, 5, 0) };
+                var cancelButton = new Button { Content = "Cancel", Width = 80, Height = 35, IsCancel = true };
+
+                saveButton.Click += (s, ev) =>
+                {
+                    try
+                    {
+                        AssignmentHistoryManager.UpdateAssignmentCompletion(assignment);
+                        MessageBox.Show("Completion status updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        window.DialogResult = true;
+                        window.Close();
+                        
+                        // Refresh the display
+                        LoadHistory();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to save: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                };
+
+                buttonStack.Children.Add(saveButton);
+                buttonStack.Children.Add(cancelButton);
+                grid.Children.Add(buttonStack);
+                Grid.SetRow(buttonStack, 1);
+
+                window.Content = grid;
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening edit dialog: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -313,6 +510,7 @@ namespace Taskmate
             }
         }
 
+
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             if (dgHistory.SelectedItem is PersistentAssignment assignment)
@@ -340,6 +538,117 @@ namespace Taskmate
             else
             {
                 MessageBox.Show("Please select an assignment first.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void btnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgHistory.ItemsSource is System.Collections.IEnumerable items)
+            {
+                foreach (PersistentAssignment assignment in items)
+                {
+                    assignment.IsSelected = true;
+                }
+                dgHistory.Items.Refresh();
+            }
+        }
+
+        private void btnDeselectAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgHistory.ItemsSource is System.Collections.IEnumerable items)
+            {
+                foreach (PersistentAssignment assignment in items)
+                {
+                    assignment.IsSelected = false;
+                }
+                dgHistory.Items.Refresh();
+            }
+        }
+
+        private void btnDeleteSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = new List<PersistentAssignment>();
+            if (dgHistory.ItemsSource is System.Collections.IEnumerable items)
+            {
+                foreach (PersistentAssignment assignment in items)
+                {
+                    if (assignment.IsSelected)
+                        selectedItems.Add(assignment);
+                }
+            }
+
+            if (selectedItems.Count == 0)
+            {
+                MessageBox.Show("Please select at least one assignment to delete.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Are you sure you want to delete {selectedItems.Count} assignment(s)?\n\nThis action cannot be undone.",
+                "Confirm Batch Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    var ids = selectedItems.Select(a => a.Id).ToList();
+                    AssignmentHistoryManager.DeleteMultipleAssignments(ids);
+                    LoadHistory();
+                    MessageBox.Show($"✓ {selectedItems.Count} assignment(s) deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to delete: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void btnDeleteByDateRange_Click(object sender, RoutedEventArgs e)
+        {
+            if (!dtFrom.SelectedDate.HasValue || !dtTo.SelectedDate.HasValue)
+            {
+                MessageBox.Show("Please select both start and end dates for the date range.", "Incomplete Date Range", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            DateTime startDate = dtFrom.SelectedDate.Value;
+            DateTime endDate = dtTo.SelectedDate.Value;
+
+            if (startDate > endDate)
+            {
+                MessageBox.Show("Start date cannot be after end date.", "Invalid Date Range", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Get count of items that will be deleted
+            var itemsToDelete = AssignmentHistoryManager.GetAssignmentsByDateRange(startDate, endDate);
+
+            if (itemsToDelete.Count == 0)
+            {
+                MessageBox.Show("No assignments found in the selected date range.", "No Data", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Are you sure you want to delete {itemsToDelete.Count} assignment(s) from {startDate:d} to {endDate:d}?\n\nThis action cannot be undone.",
+                "Confirm Delete by Date Range",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    AssignmentHistoryManager.DeleteAssignmentsByDateRange(startDate, endDate);
+                    LoadHistory();
+                    MessageBox.Show($"✓ {itemsToDelete.Count} assignment(s) deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to delete: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

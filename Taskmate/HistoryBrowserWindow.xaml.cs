@@ -69,59 +69,52 @@ namespace Taskmate
 
         private void ApplyFilters()
         {
-            filteredAssignments = new List<PersistentAssignment>(allAssignments);
+            // Start with all assignments and chain LINQ queries
+            IEnumerable<PersistentAssignment> filtered = allAssignments;
 
             // Search filter
             if (!string.IsNullOrWhiteSpace(txtSearch.Text))
             {
-                string search = txtSearch.Text.ToLower();
-                filteredAssignments = filteredAssignments
-                    .Where(a => 
-                        (a.Tag?.ToLower().Contains(search) ?? false) ||
-                        (a.GroupName?.ToLower().Contains(search) ?? false) ||
-                        (a.Notes?.ToLower().Contains(search) ?? false) ||
-                        (a.Assignments?.Any(p => p.Person?.ToLower().Contains(search) ?? false) ?? false))
-                    .ToList();
+                string searchLower = txtSearch.Text.ToLower();
+                filtered = filtered.Where(a =>
+                    (a.Tag?.ToLower().Contains(searchLower) ?? false) ||
+                    (a.GroupName?.ToLower().Contains(searchLower) ?? false) ||
+                    (a.Notes?.ToLower().Contains(searchLower) ?? false) ||
+                    (a.Assignments?.Any(p => p.Person?.ToLower().Contains(searchLower) ?? false) ?? false));
             }
 
             // Tag filter
-            if (cmbTags.SelectedIndex > 0 && cmbTags.SelectedItem != null)
+            if (cmbTags.SelectedIndex > 0 && cmbTags.SelectedItem is string selectedTag)
             {
-                string selectedTag = cmbTags.SelectedItem.ToString()!;
-                filteredAssignments = filteredAssignments
-                    .Where(a => a.Tag?.Equals(selectedTag, StringComparison.OrdinalIgnoreCase) ?? false)
-                    .ToList();
+                filtered = filtered.Where(a => a.Tag?.Equals(selectedTag, StringComparison.OrdinalIgnoreCase) ?? false);
             }
 
             // Date range filter
             if (dtFrom.SelectedDate.HasValue && dtTo.SelectedDate.HasValue)
             {
                 var start = dtFrom.SelectedDate.Value;
-                var end = dtTo.SelectedDate.Value.AddDays(1); // Include the entire end date
-                filteredAssignments = filteredAssignments
-                    .Where(a => a.Timestamp >= start && a.Timestamp < end)
-                    .ToList();
+                var end = dtTo.SelectedDate.Value.AddDays(1);
+                filtered = filtered.Where(a => a.Timestamp >= start && a.Timestamp < end);
             }
 
             // Completion status filter
-            if (cmbCompletionStatus.SelectedIndex > 0 && cmbCompletionStatus.SelectedItem != null)
+            if (cmbCompletionStatus.SelectedIndex > 0 && cmbCompletionStatus.SelectedItem is string selectedStatus)
             {
-                string selectedStatus = cmbCompletionStatus.SelectedItem.ToString()!;
-                filteredAssignments = filteredAssignments
-                    .Where(a =>
+                filtered = filtered.Where(a =>
+                {
+                    double completionPercentage = a.OverallCompletionPercentage;
+                    return selectedStatus switch
                     {
-                        double completionPercentage = a.OverallCompletionPercentage;
-                        return selectedStatus switch
-                        {
-                            "Complete" => completionPercentage >= 100,
-                            "Partial" => completionPercentage > 0 && completionPercentage < 100,
-                            "Incomplete" => completionPercentage == 0,
-                            _ => true
-                        };
-                    })
-                    .ToList();
+                        "Complete" => completionPercentage >= 100,
+                        "Partial" => completionPercentage > 0 && completionPercentage < 100,
+                        "Incomplete" => completionPercentage == 0,
+                        _ => true
+                    };
+                });
             }
 
+            // Convert to list only once at the end
+            filteredAssignments = filtered.ToList();
             UpdateDisplay();
         }
 

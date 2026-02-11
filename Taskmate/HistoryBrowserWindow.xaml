@@ -70,7 +70,7 @@
                 <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="120"/>
                 <DataGridTextColumn Header="Group" Binding="{Binding GroupName}" Width="150"/>
                 <DataGridTextColumn Header="People" Binding="{Binding Assignments.Count}" Width="80"/>
-                <DataGridTextColumn Header="Total Tasks" Binding="{Binding Assignments, Converter={StaticResource TaskCountConverter}}" Width="100"/>
+                <DataGridTextColumn Header="Total Tasks" Binding="{Binding Assignments.Count}" Width="100"/>
                 
                 <!-- Completion Status Column with Color Coding -->
                 <DataGridTemplateColumn Header="Completion" Width="120">

@@ -74,26 +74,24 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
                         
-                        <!-- Completion Rate with Color Coding -->
-                        <DataGridTemplateColumn Header="Completion %" Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
-                                        <Border.Background>
-                                            <MultiBinding Converter="{StaticResource CompletionStatusColorConverter}">
-                                                <Binding Path="CompletionRate"/>
-                                            </MultiBinding>
-                                        </Border.Background>
-                                        <TextBlock Text="{Binding CompletionRate, StringFormat=\{0:F1\}%}" 
-                                                 Foreground="White"
-                                                 FontWeight="Bold"
-                                                 FontSize="11"/>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                         <!-- Completion Rate with Color Coding -->
+                         <DataGridTemplateColumn Header="Completion %" Width="120">
+                             <DataGridTemplateColumn.CellTemplate>
+                                 <DataTemplate>
+                                     <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
+                                         <Border.Background>
+                                             <Binding Path="CompletionRate" Converter="{StaticResource CompletionStatusColorConverter}"/>
+                                         </Border.Background>
+                                         <TextBlock Text="{Binding CompletionRate, StringFormat=\{0:F1\}%}" 
+                                                  Foreground="White"
+                                                  FontWeight="Bold"
+                                                  FontSize="11"/>
+                                     </Border>
+                                 </DataTemplate>
+                             </DataGridTemplateColumn.CellTemplate>
+                         </DataGridTemplateColumn>
+                         
+                         <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -119,26 +117,24 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
                         
-                        <!-- Completion Rate -->
-                        <DataGridTemplateColumn Header="Completion %" Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
-                                        <Border.Background>
-                                            <MultiBinding Converter="{StaticResource CompletionStatusColorConverter}">
-                                                <Binding Path="CompletionRate"/>
-                                            </MultiBinding>
-                                        </Border.Background>
-                                        <TextBlock Text="{Binding CompletionRate, StringFormat=\{0:F1\}%}" 
-                                                 Foreground="White"
-                                                 FontWeight="Bold"
-                                                 FontSize="11"/>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                         <!-- Completion Rate -->
+                         <DataGridTemplateColumn Header="Completion %" Width="120">
+                             <DataGridTemplateColumn.CellTemplate>
+                                 <DataTemplate>
+                                     <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
+                                         <Border.Background>
+                                             <Binding Path="CompletionRate" Converter="{StaticResource CompletionStatusColorConverter}"/>
+                                         </Border.Background>
+                                         <TextBlock Text="{Binding CompletionRate, StringFormat=\{0:F1\}%}" 
+                                                  Foreground="White"
+                                                  FontWeight="Bold"
+                                                  FontSize="11"/>
+                                     </Border>
+                                 </DataTemplate>
+                             </DataGridTemplateColumn.CellTemplate>
+                         </DataGridTemplateColumn>
+                         
+                         <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -182,24 +178,22 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
                         
-                        <!-- Average Completion -->
-                        <DataGridTemplateColumn Header="Avg Completion %" Width="140">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
-                                        <Border.Background>
-                                            <MultiBinding Converter="{StaticResource CompletionStatusColorConverter}">
-                                                <Binding Path="AverageCompletion"/>
-                                            </MultiBinding>
-                                        </Border.Background>
-                                        <TextBlock Text="{Binding AverageCompletion, StringFormat=\{0:F1\}%}" 
-                                                 Foreground="White"
-                                                 FontWeight="Bold"
-                                                 FontSize="11"/>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                         <!-- Average Completion -->
+                         <DataGridTemplateColumn Header="Avg Completion %" Width="140">
+                             <DataGridTemplateColumn.CellTemplate>
+                                 <DataTemplate>
+                                     <Border CornerRadius="3" Padding="8,4" HorizontalAlignment="Center">
+                                         <Border.Background>
+                                             <Binding Path="AverageCompletion" Converter="{StaticResource CompletionStatusColorConverter}"/>
+                                         </Border.Background>
+                                         <TextBlock Text="{Binding AverageCompletion, StringFormat=\{0:F1\}%}" 
+                                                  Foreground="White"
+                                                  FontWeight="Bold"
+                                                  FontSize="11"/>
+                                     </Border>
+                                 </DataTemplate>
+                             </DataGridTemplateColumn.CellTemplate>
+                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

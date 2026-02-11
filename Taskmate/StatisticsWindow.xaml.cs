@@ -26,14 +26,29 @@ namespace Taskmate
                 return;
             }
 
-            int totalTasks = assignments.Sum(a => a.TaskCount);
+            // Recalculate task counts directly from Tasks strings to ensure accuracy
+            int totalTasks = 0;
+            foreach (var assignment in assignments)
+            {
+                if (!string.IsNullOrWhiteSpace(assignment.Tasks))
+                {
+                    var taskList = assignment.Tasks.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+                    assignment.TaskCount = taskList.Length;
+                    totalTasks += taskList.Length;
+                }
+                else
+                {
+                    assignment.TaskCount = 0;
+                }
+            }
+
             int totalPeople = assignments.Count;
             double avgTasks = (double)totalTasks / totalPeople;
             
-            // Calculate fairness score (0-100, where 100 is perfectly fair)
+            // Calculate fairness score using SAME formula as Dashboard
             double variance = assignments.Average(a => Math.Pow(a.TaskCount - avgTasks, 2));
             double stdDev = Math.Sqrt(variance);
-            double fairnessScore = Math.Max(0, 100 - (stdDev * 20)); // Scale it
+            double fairnessScore = avgTasks > 0 ? Math.Max(0, 100 - (stdDev / avgTasks * 100)) : 0;
 
             txtTotalTasks.Text = totalTasks.ToString();
             txtTotalPeople.Text = totalPeople.ToString();

@@ -47,7 +47,6 @@ namespace Taskmate
             RoleManager.EnsureDefaultRoles();
             CategoryManager.EnsureDefaultCategories();
             
-            // Load features and update UI
             features = FeatureManager.GetFeatures();
             UpdateMenusBasedOnFeatures();
             
@@ -64,11 +63,58 @@ namespace Taskmate
                 ? Visibility.Visible 
                 : Visibility.Collapsed;
             
-            // Check for first run
-            Loaded += MainWindow_Loaded;
-            
             // Initialize dashboard
             UpdateDashboard();
+        }
+
+        private void btnEditAssignments_Click(object sender, RoutedEventArgs e)
+        {
+            if (tasks.Count == 0 || currentAssignments.Count == 0)
+            {
+                MessageBox.Show("Please load tasks and assign them first.", "No Assignments", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var editor = new TaskAssignmentEditorWindow(tasks, currentAssignments)
+            {
+                Owner = this
+            };
+
+            if (editor.ShowDialog() == true)
+            {
+                // Only update if assignments actually changed
+                if (editor.AssignmentsChanged)
+                {
+                    // Update assignments from editor
+                    currentAssignments = editor.UpdatedAssignments;
+                    
+                    // Recalculate task counts and workload for updated assignments
+                    foreach (var assignment in currentAssignments)
+                    {
+                        assignment.RecalculateMetrics();
+                    }
+                    
+                    // Refresh the grid
+                    dgAssignments.ItemsSource = null;
+                    dgAssignments.ItemsSource = currentAssignments;
+                    UpdateDashboard();
+                    
+                    // Close any open statistics windows so they refresh when reopened
+                    var windowsToClose = new List<Window>();
+                    foreach (Window window in OwnedWindows)
+                    {
+                        if (window is CompletionStatisticsWindow || window is StatisticsWindow)
+                        {
+                            windowsToClose.Add(window);
+                        }
+                    }
+                    foreach (var window in windowsToClose)
+                    {
+                        window.Close();
+                    }
+                }
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -572,6 +618,8 @@ namespace Taskmate
                 
                 btnUndo.IsEnabled = true;
                 mnuUndo.IsEnabled = true;
+                btnEditTag.IsEnabled = true;
+                UpdateTagDisplay();
 
                 // Send notification if enabled
                 if (features.UseNotifications && NotificationManager.AreNotificationsSupported())
@@ -599,7 +647,7 @@ namespace Taskmate
         {
             try
             {
-                // Ask for tag if tagging is enabled
+                // Use existing tag if available, only ask if needed
                 string selectedTag = "Untagged";
                 
                 // If tagging at assignment time is enabled, use the CurrentTag from assignments
@@ -607,15 +655,24 @@ namespace Taskmate
                 {
                     selectedTag = assignments[0].CurrentTag; // All assignments have same tag
                     
-                    // Allow user to change tag during posting if desired
-                    var tagDialog = new TagSelectionDialog
+                    // Only prompt for tag if group doesn't have one AND it's Untagged (avoids repeated prompts)
+                    if (selectedTag == "Untagged")
                     {
-                        Owner = this
-                    };
+                        var tagDialog = new TagSelectionDialog
+                        {
+                            Owner = this
+                        };
 
-                    if (tagDialog.ShowDialog() == true)
-                    {
-                        selectedTag = tagDialog.SelectedTag;
+                        if (tagDialog.ShowDialog() == true)
+                        {
+                            selectedTag = tagDialog.SelectedTag;
+                            // Update the tag in assignments and currentGroupTag
+                            foreach (var assignment in assignments)
+                            {
+                                assignment.CurrentTag = selectedTag;
+                            }
+                            currentGroupTag = selectedTag;
+                        }
                     }
                 }
                 else if (features.UseTagging && !features.UseTaggingAtAssignment)
@@ -846,6 +903,7 @@ namespace Taskmate
                     txtStatus.Text = "All assignments cleared";
                     btnUndo.IsEnabled = false;
                     mnuUndo.IsEnabled = false;
+                    btnEditTag.IsEnabled = false;
                 }
             }
         }
@@ -866,6 +924,9 @@ namespace Taskmate
                 txtStatus.Text = "✓ Assignment posted to history - Ready for new assignment";
                 btnUndo.IsEnabled = false;
                 mnuUndo.IsEnabled = false;
+                btnEditTag.IsEnabled = false;
+                currentGroupTag = "Untagged";
+                UpdateTagDisplay();
                 
                 // Clear for next assignment
                 currentAssignments = new List<AssignmentResult>();
@@ -875,6 +936,49 @@ namespace Taskmate
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to post assignment: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnEditTag_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentAssignments == null || currentAssignments.Count == 0)
+            {
+                MessageBox.Show("No assignments to edit tag for. Please assign tasks first.", "No Data", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var tagDialog = new TagSelectionDialog
+            {
+                Owner = this
+            };
+
+            if (tagDialog.ShowDialog() == true)
+            {
+                string newTag = tagDialog.SelectedTag;
+                
+                // Update all assignments with new tag
+                foreach (var assignment in currentAssignments)
+                {
+                    assignment.CurrentTag = newTag;
+                }
+                
+                // Update the stored group tag as well
+                currentGroupTag = newTag;
+                
+                txtStatus.Text = $"✓ Tag changed to '{newTag}'";
+                UpdateTagDisplay();
+            }
+        }
+
+        private void UpdateTagDisplay()
+        {
+            if (txtCurrentTag != null)
+            {
+                string tagToDisplay = currentGroupTag ?? "Untagged";
+                txtCurrentTag.Text = tagToDisplay;
+                txtCurrentTag.Foreground = string.IsNullOrEmpty(currentGroupTag) || currentGroupTag == "Untagged" 
+                    ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray)
+                    : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(25, 118, 210));
             }
         }
 
@@ -901,7 +1005,23 @@ namespace Taskmate
                 return;
             }
 
-            var statsWindow = new StatisticsWindow(currentAssignments)
+            // Create a fresh copy with recalculated metrics to ensure fresh data
+            var assignmentsForStats = new List<AssignmentResult>();
+            foreach (var assignment in currentAssignments)
+            {
+                var copy = new AssignmentResult
+                {
+                    Person = assignment.Person,
+                    TaskCount = assignment.TaskCount,
+                    Tasks = assignment.Tasks,
+                    WorkloadPercentage = assignment.WorkloadPercentage,
+                    Capacity = assignment.Capacity
+                };
+                copy.RecalculateMetrics();
+                assignmentsForStats.Add(copy);
+            }
+
+            var statsWindow = new StatisticsWindow(assignmentsForStats)
             {
                 Owner = this
             };
@@ -1200,8 +1320,22 @@ RIGHT-CLICK on the grid for more options!";
             {
                 // Load the selected assignment
                 currentAssignments = new List<AssignmentResult>(loadedAssignment.Assignments);
+                
+                // Set the tag from the loaded assignment
+                currentGroupTag = loadedAssignment.Tag;
+                
+                // Update all assignments with the loaded tag
+                foreach (var assignment in currentAssignments)
+                {
+                    assignment.CurrentTag = loadedAssignment.Tag;
+                }
+                
                 dgAssignments.ItemsSource = currentAssignments;
-                txtStatus.Text = $"Loaded assignment from {loadedAssignment.Timestamp:g} - {loadedAssignment.Tag}";
+                txtStatus.Text = $"Loaded assignment from {loadedAssignment.Timestamp:g}";
+                
+                // Enable edit controls and display tag
+                btnEditTag.IsEnabled = true;
+                UpdateTagDisplay();
             }
         }
 

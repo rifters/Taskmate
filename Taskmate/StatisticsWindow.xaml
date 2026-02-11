@@ -23,6 +23,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Tasks:" FontWeight="SemiBold"/>
@@ -31,11 +32,13 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Total People:" FontWeight="SemiBold" Margin="0,5,0,0"/>
                 <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtTotalPeople" HorizontalAlignment="Right" Margin="0,5,0,0"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Average Tasks/Person:" FontWeight="SemiBold" Margin="0,5,0,0"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtAvgTasks" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Target/Ideal Tasks/Person:" FontWeight="SemiBold" Margin="0,5,0,0" Foreground="#2196F3"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtAvgTasks" HorizontalAlignment="Right" Margin="0,5,0,0" Foreground="#2196F3"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Fairness Score:" FontWeight="SemiBold" Margin="0,5,0,0"/>
                 <TextBlock Grid.Row="3" Grid.Column="1" x:Name="txtFairness" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                
+                <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Text="(See chart below for actual distribution)" FontSize="9" Foreground="#666" Margin="0,8,0,0" FontStyle="Italic"/>
             </Grid>
         </GroupBox>
 

@@ -3,7 +3,7 @@
 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 xmlns:local="clr-namespace:Taskmate"
-Title="Task Assigner" Height="550" Width="950"
+Title="Task Assigner" Height="550" Width="1250"
 AllowDrop="True"
 Drop="Window_Drop"
 DragOver="Window_DragOver">
@@ -203,6 +203,8 @@ DragOver="Window_DragOver">
                     <Button Name="btnManagePeople" Content="✏️ Manage People" Width="130" Height="35" Margin="0,0,10,0" Click="btnManagePeople_Click"/>
                     <Button Name="btnConstraints" Content="🚫 Constraints" Width="110" Height="35" Margin="0,0,10,0" Click="btnConstraints_Click" ToolTip="Manage task exclusions"/>
                     <Button Name="btnAssign" Content="🎲 Assign (F5)" Width="120" Height="35" Margin="0,0,5,0" Click="btnAssign_Click" FontWeight="Bold"/>
+                    <Button Name="btnEditAssignments" Content="📋 Edit Assignments" Width="140" Height="35" Margin="0,0,5,0" Click="btnEditAssignments_Click" ToolTip="Manually edit task assignments with AI suggestions"/>
+                    <Button Name="btnEditTag" Content="🏷️ Edit Tag" Width="90" Height="35" Margin="0,0,5,0" Click="btnEditTag_Click" ToolTip="Change the tag for this assignment" IsEnabled="False"/>
                     <Button Name="btnPostAssignment" Content="📌 Post" Width="80" Height="35" Margin="0,0,5,0" Click="btnPostAssignment_Click" ToolTip="Save assignment to history"/>
                     <Button Name="btnUndo" Content="↩️ Undo" Width="80" Height="35" Margin="0,0,10,0" Click="btnUndo_Click" IsEnabled="False" ToolTip="Undo last assignment (Ctrl+Z)"/>
                     <Button Name="btnShowStats" Content="📊 Stats" Width="80" Height="35" Margin="0,0,10,0" Click="btnShowStats_Click"/>
@@ -377,7 +379,12 @@ DragOver="Window_DragOver">
             <!-- Status bar -->
             <Border Grid.Row="4" Background="{DynamicResource PanelBackgroundBrush}" Padding="10,5" Margin="0,10,0,0" CornerRadius="3">
                 <Grid>
-                    <TextBlock Name="txtStatus" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Name="txtStatus" FontWeight="SemiBold"/>
+                        <TextBlock Text=" | " Foreground="#999" Margin="10,0"/>
+                        <TextBlock Text="Tag: " Foreground="#666" FontSize="10"/>
+                        <TextBlock x:Name="txtCurrentTag" Text="(None)" FontSize="10" Foreground="#1976d2" FontWeight="Bold"/>
+                    </StackPanel>
                     <TextBlock Name="txtConstraintInfo" HorizontalAlignment="Right" VerticalAlignment="Center" FontStyle="Italic" Opacity="0.7"/>
                 </Grid>
             </Border>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Taskmate.Utilities;
 
 namespace Taskmate
 {
@@ -56,6 +57,7 @@ namespace Taskmate
             }
             catch (Exception ex)
             {
+                Logger.LogError("Error loading dashboard (async)", ex);
                 MessageBox.Show($"Error loading dashboard: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -92,6 +94,7 @@ namespace Taskmate
             }
             catch (Exception ex)
             {
+                Logger.LogError("Error loading dashboard (sync)", ex);
                 MessageBox.Show($"Error loading dashboard: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

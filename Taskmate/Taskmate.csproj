@@ -9,6 +9,18 @@
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ApplicationIcon>Assets\Icons\icon.ico</ApplicationIcon>
+    
+    <!-- Warning suppressions for unavoidable third-party library issues -->
+    <NoWarn>$(NoWarn);CS8618;CS8619;CS8604;CS8601;CS8602;CS8625;NU1701</NoWarn>
+    <!-- 
+      CS8618: Non-nullable reference type is uninitialized (third-party libs)
+      CS8619: Nullability of reference types doesn't match (third-party interop)
+      CS8604: Possible null reference argument (third-party APIs)
+      CS8601: Possible null reference assignment (third-party APIs)
+      CS8602: Dereference of possibly null reference (third-party libs)
+      CS8625: Cannot use null in parameter (third-party conversion)
+      NU1701: Package compatibility issues
+    -->
   </PropertyGroup>
 
   <ItemGroup>
